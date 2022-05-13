@@ -68,9 +68,9 @@ void setup()
 {
     Serial.begin(9600);
 
-    //! debug: wait for serial monitor
-    while (!Serial)
-        ;
+    // //! debug: wait for serial monitor
+    // while (!Serial)
+    //     ;
 
     HardwareSetup();
 
