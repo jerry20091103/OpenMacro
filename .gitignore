@@ -1,2 +1,7 @@
 # Qt Creator build folders
 build-*
+
+# Arduino build folder
+arduino-build
+
+.vscode/c_cpp_properties.json
