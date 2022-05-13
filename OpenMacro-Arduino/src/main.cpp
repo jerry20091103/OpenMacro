@@ -35,13 +35,17 @@ void readRfid()
 
 void receiveSerial()
 {
-    if(Serial.available())
+    if (Serial.available())
     {
-        String temp;
-        temp = Serial.readString();
+        uint8_t temp[10];
+        Serial.readBytes(temp, 10);
         u8g2.clearBuffer();
         u8g2.setCursor(0, 20);
-        u8g2.print(temp);
+        for (int i = 0; i < 10; i++)
+        {
+            u8g2.print(temp[i]);
+            u8g2.print(" ");
+        }
         u8g2.sendBuffer();
     }
 }
@@ -60,22 +64,22 @@ void readAnalog()
     u8g2.print(" ");
     u8g2.print(analogRead(JOY_Y));
     u8g2.sendBuffer();
-    
-    u8g2.setFont(u8g2_font_10x20_mr); 
+
+    u8g2.setFont(u8g2_font_10x20_mr);
 }
 
 void setup()
 {
     Serial.begin(9600);
 
-    // //! debug: wait for serial monitor
-    // while (!Serial)
-    //     ;
+    //! debug: wait for serial monitor
+    while (!Serial)
+        ;
 
     HardwareSetup();
 
     taskManager.scheduleFixedRate(100, readRfid);
-    taskManager.scheduleFixedRate(50, receiveSerial);
+    taskManager.scheduleFixedRate(1, receiveSerial);
     taskManager.scheduleFixedRate(100, readAnalog);
 }
 
