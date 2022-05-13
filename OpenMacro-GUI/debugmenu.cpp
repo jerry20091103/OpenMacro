@@ -1,7 +1,6 @@
 #include "debugmenu.h"
 
 const char* debugPortName = "COM12";
-QSerialPort::BaudRate baudRate = QSerialPort::Baud9600;
 
 DebugMenu::DebugMenu(QWidget* parent) : QMenu(parent)
 {
@@ -11,7 +10,7 @@ DebugMenu::DebugMenu(QWidget* parent) : QMenu(parent)
 static QSerialPort* initSerialPort(){
     auto serialPort = new QSerialPort();
     serialPort->setPortName(debugPortName);
-    serialPort->setBaudRate(baudRate);
+    serialPort->setBaudRate(QSerialPort::Baud9600);
     serialPort->setDataBits(QSerialPort::Data8);
     serialPort->setParity(QSerialPort::NoParity);
     serialPort->setStopBits(QSerialPort::OneStop);
@@ -44,11 +43,9 @@ void DebugMenu::testSerialWrite(QSerialPort* serialPort){
     auto openMode = QIODeviceBase::OpenMode();
     openMode.setFlag(QIODeviceBase::OpenModeFlag::WriteOnly);
     if(serialPort->open(openMode)){
-        char bytes[8];
-        for(int i = 0; i < 8; ++i) bytes[i] = i + 1;
         int bytesWritten = serialPort->write("Hello?\r\n");
         if(bytesWritten == -1) qDebug() << "Failed to write bytes to" << debugPortName;
-        else qDebug() << "Wrote " << bytesWritten << " to" << debugPortName;
+        else qDebug() << "Wrote " << bytesWritten << " bytes to" << debugPortName;
         serialPort->close();
     }
     else qDebug() << "Failed to open port" << debugPortName;
