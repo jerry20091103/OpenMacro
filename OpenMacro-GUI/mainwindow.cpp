@@ -13,3 +13,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::Test(){
+    std::printf("Test\n");
+}
