@@ -16,7 +16,7 @@ static QSerialPort* initSerialPort(){
 
     serialPort->open(openMode);
 
-    serialPort->setBaudRate(baudRate);
+    serialPort->setBaudRate(QSerialPort::Baud9600);
     serialPort->setDataBits(QSerialPort::Data8);
     serialPort->setParity(QSerialPort::NoParity);
     serialPort->setStopBits(QSerialPort::OneStop);
@@ -33,40 +33,22 @@ void DebugMenu::testSerial(void (*testFunc)(QSerialPort*)){
 
 void DebugMenu::testSerialRead(QSerialPort* serialPort){
     qDebug() << "TestSerialRead";
-//    auto openMode = QIODeviceBase::OpenMode();
-//    openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadOnly);
     if(serialPort->isOpen()){
         while (!serialPort->canReadLine())
                 serialPort->waitForReadyRead(-1);
         auto readResult = serialPort->readLine ();
         qDebug() << readResult;
-        //serialPort->close();
     }
     else qDebug() << "Failed to open port" << debugPortName;
 }
 
 void DebugMenu::testSerialWrite(QSerialPort* serialPort){
     qDebug() << "TestSerialWrite";
-<<<<<<< HEAD
-//    auto openMode = QIODeviceBase::OpenMode();
-//    openMode.setFlag(QIODeviceBase::OpenModeFlag::WriteOnly);
     if(serialPort->isOpen() && serialPort->isWritable()){
-        char bytes[8];
-        for(int i = 0; i < 8; ++i) bytes[i] = i + 1;
         int bytesWritten = serialPort->write("Hello from Qt");
         serialPort->flush();
         if(bytesWritten == -1) qDebug() << "Failed to write bytes to" << debugPortName;
         else qDebug() << "Wrote " << bytesWritten << " to" << debugPortName;
-        //serialPort->close();
-=======
-    auto openMode = QIODeviceBase::OpenMode();
-    openMode.setFlag(QIODeviceBase::OpenModeFlag::WriteOnly);
-    if(serialPort->open(openMode)){
-        int bytesWritten = serialPort->write("Hello?\r\n");
-        if(bytesWritten == -1) qDebug() << "Failed to write bytes to" << debugPortName;
-        else qDebug() << "Wrote " << bytesWritten << " bytes to" << debugPortName;
-        serialPort->close();
->>>>>>> d4de74249291678d5d152f0eb11a4ab99daf45cd
     }
     else qDebug() << "Failed to open port" << debugPortName;
 }
