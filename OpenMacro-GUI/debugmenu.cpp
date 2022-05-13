@@ -1,7 +1,6 @@
 #include "debugmenu.h"
 
 const char* debugPortName = "COM12";
-QSerialPort::BaudRate baudRate = QSerialPort::Baud9600;
 
 DebugMenu::DebugMenu(QWidget* parent) : QMenu(parent)
 {
@@ -48,6 +47,7 @@ void DebugMenu::testSerialRead(QSerialPort* serialPort){
 
 void DebugMenu::testSerialWrite(QSerialPort* serialPort){
     qDebug() << "TestSerialWrite";
+<<<<<<< HEAD
 //    auto openMode = QIODeviceBase::OpenMode();
 //    openMode.setFlag(QIODeviceBase::OpenModeFlag::WriteOnly);
     if(serialPort->isOpen() && serialPort->isWritable()){
@@ -58,6 +58,15 @@ void DebugMenu::testSerialWrite(QSerialPort* serialPort){
         if(bytesWritten == -1) qDebug() << "Failed to write bytes to" << debugPortName;
         else qDebug() << "Wrote " << bytesWritten << " to" << debugPortName;
         //serialPort->close();
+=======
+    auto openMode = QIODeviceBase::OpenMode();
+    openMode.setFlag(QIODeviceBase::OpenModeFlag::WriteOnly);
+    if(serialPort->open(openMode)){
+        int bytesWritten = serialPort->write("Hello?\r\n");
+        if(bytesWritten == -1) qDebug() << "Failed to write bytes to" << debugPortName;
+        else qDebug() << "Wrote " << bytesWritten << " bytes to" << debugPortName;
+        serialPort->close();
+>>>>>>> d4de74249291678d5d152f0eb11a4ab99daf45cd
     }
     else qDebug() << "Failed to open port" << debugPortName;
 }
