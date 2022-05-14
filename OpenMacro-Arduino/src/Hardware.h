@@ -6,22 +6,31 @@
 #include "MFRC522.h"
 #include "u8g2lib.h"
 #include "Keyboard.h"
+#include <KeyboardManager.h>
 
 // *Pins
 // Rotray Encoders and buttons
-#define ENCA 11
-#define ENCB 13
+#define ENCA 7
+#define ENCB 12
 #define BTN_ENC 22
 
-#define BTN0 12
-#define BTN1 9
-#define BTN2 8
-#define BTN3 7
-#define BTN4 6
+#define COL0 9
+#define COL1 8
+#define COL2 6
+#define ROW0 5
+#define ROW1 4
+#define ROW2 11
+
+// button number for key matrix
+#define BTN0 0
+#define BTN1 1
+#define BTN2 2
+#define BTN3 3
+#define BTN4 4
 #define BTN5 5
-#define BTN6 4
-#define BTN7 0 
-#define BTN8 1
+#define BTN6 6
+#define BTN7 7
+#define BTN8 8
 
 // sliders
 #define SLIDER0 A0
@@ -46,7 +55,7 @@ extern HardwareRotaryEncoder* enc0;
 extern MFRC522 rfid;
 
 // OLED display object
-extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
+extern U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
 
 void HardwareSetup();
 
