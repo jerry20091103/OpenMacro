@@ -5,13 +5,15 @@
 #define MAX_PRESETS 9
 #define MAX_PASSWORDS 9
 
-enum MacroMode : unsigned char
+#include <stdint.h>
+
+enum MacroMode : uint8_t
 {
     KEYBAORD_MOUSE_CLICK,
     MOUSE_MOVE,
 };
 
-enum ButtonInputs : unsigned char
+enum ButtonInputs : uint8_t
 {
     // 3x3 buttons
     BTN0,
@@ -33,17 +35,17 @@ enum ButtonInputs : unsigned char
 
 struct MacroPassword
 {
-    unsigned short size;
+    uint16_t size;
     char *str;
 };
 
 struct MacroAction
 {
     MacroMode mode;
-    unsigned char size;
-    unsigned short delay;
-    short mouseMove[3];
-    unsigned char *btnPress[3];
+    uint8_t size;
+    uint16_t delay;
+    int16_t mouseMove[3];
+    uint8_t *btnPress[3];
     // keycodes defined in ImprovedKeylayouts.h, mouse button defined in MouseAPI.hpp.
     // each button press has 3 values : [modifier keycode, keycode, mouse btn]
     // the struct contains list of button press (btnPress[size][3])
@@ -53,7 +55,7 @@ struct MacroAction
 
 struct MacroPreset
 {
-    unsigned char size;
+    uint8_t size;
     MacroAction *inputs;
     // a list of button inputs, ordered as the "ButtonInputs" enum above.
     // dynamic length to allow further expansion.
@@ -67,7 +69,7 @@ struct MacroConfig
 
 void SerializeConfig(MacroConfig *config, char *data)
 {
-    unsigned char *p8 = (unsigned char *)data;
+    uint8_t *p8 = (uint8_t *)data;
     // presets
     for (int i = 0; i < MAX_PRESETS; i++)
     {
@@ -80,19 +82,19 @@ void SerializeConfig(MacroConfig *config, char *data)
             *p8 = config->presets[i].inputs[input].size;
             p8++;
 
-            unsigned short *p_ushort = (unsigned short *)p8;
-            *p_ushort = config->presets[i].inputs[input].delay;
-            p_ushort++;
+            uint16_t *p_uint16_t = (uint16_t *)p8;
+            *p_uint16_t = config->presets[i].inputs[input].delay;
+            p_uint16_t++;
 
-            short *p_short = (short *)p_ushort;
-            *p_short = config->presets[i].inputs[input].mouseMove[0];
-            p_short++;
-            *p_short = config->presets[i].inputs[input].mouseMove[1];
-            p_short++;
-            *p_short = config->presets[i].inputs[input].mouseMove[2];
-            p_short++;
+            int16_t *p_int16_t = (int16_t *)p_uint16_t;
+            *p_int16_t = config->presets[i].inputs[input].mouseMove[0];
+            p_int16_t++;
+            *p_int16_t = config->presets[i].inputs[input].mouseMove[1];
+            p_int16_t++;
+            *p_int16_t = config->presets[i].inputs[input].mouseMove[2];
+            p_int16_t++;
 
-            p8 = (unsigned char *)p_short;
+            p8 = (uint8_t *)p_int16_t;
             for (int press = 0; press < config->presets[i].inputs[input].size * 3; i++)
             {
                 *p8 = *config->presets[i].inputs[input].btnPress[press];
@@ -117,7 +119,7 @@ void SerializeConfig(MacroConfig *config, char *data)
 
 void DeserializeConfig(char *data, MacroConfig *config)
 {
-    unsigned char *p8 = (unsigned char *)data;
+    uint8_t *p8 = (uint8_t *)data;
     // presets
     for (int i = 0; i < MAX_PRESETS; i++)
     {
@@ -133,21 +135,21 @@ void DeserializeConfig(char *data, MacroConfig *config)
             config->presets[i].inputs[input].size = *p8;
             p8++;
 
-            unsigned short *p_ushort = (unsigned short *)p8;
-            config->presets[i].inputs[input].delay = *p_ushort;
-            p_ushort++;
+            uint16_t *p_uint16_t = (uint16_t *)p8;
+            config->presets[i].inputs[input].delay = *p_uint16_t;
+            p_uint16_t++;
 
-            short *p_short = (short *)p_ushort;
-            config->presets[i].inputs[input].mouseMove[0] = *p_ushort;
-            p_short++;
-            config->presets[i].inputs[input].mouseMove[1] = *p_ushort;
-            p_short++;
-            config->presets[i].inputs[input].mouseMove[2] = *p_ushort;
-            p_short++;
+            int16_t *p_int16_t = (int16_t *)p_uint16_t;
+            config->presets[i].inputs[input].mouseMove[0] = *p_uint16_t;
+            p_int16_t++;
+            config->presets[i].inputs[input].mouseMove[1] = *p_uint16_t;
+            p_int16_t++;
+            config->presets[i].inputs[input].mouseMove[2] = *p_uint16_t;
+            p_int16_t++;
 
-            p8 = (unsigned char *)p_short;
+            p8 = (uint8_t *)p_int16_t;
 
-            config->presets[i].inputs[input].btnPress[0] = new unsigned char[config->presets[i].inputs[input].size * 3];
+            config->presets[i].inputs[input].btnPress[0] = new uint8_t[config->presets[i].inputs[input].size * 3];
 
             for (int press = 0; press < config->presets[i].inputs[input].size * 3; i++)
             {
