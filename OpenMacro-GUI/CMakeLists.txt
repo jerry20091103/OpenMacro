@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
         App/mainwindow.cpp App/mainwindow.h App/mainwindow.ui
         App/debugmenu.h App/debugmenu.cpp
         App/presetmenu.h App/presetmenu.cpp
+        App/inputlist.h App/inputlist.cpp
         Core/preset.h Core/preset.cpp
         ${MACRO_CONFIG_FILES}
         ${TS_FILES}

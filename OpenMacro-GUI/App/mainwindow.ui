@@ -49,7 +49,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="9,1">
          <item>
-          <widget class="QListWidget" name="inputList">
+          <widget class="InputList" name="inputList">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
            </property>
@@ -64,14 +64,14 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QPushButton" name="newInputButton">
+            <widget class="QPushButton" name="actionNewInput">
              <property name="text">
               <string>New Input</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="actionDeleteSelectedInput">
              <property name="text">
               <string>Delete Selected</string>
              </property>
@@ -210,9 +210,68 @@
     <slot>onSavePreset()</slot>
    </slots>
   </customwidget>
+  <customwidget>
+   <class>InputList</class>
+   <extends>QListWidget</extends>
+   <header>App/inputlist.h</header>
+   <slots>
+    <slot>onNewInput()</slot>
+    <slot>onDeleteSelected()</slot>
+    <slot>onSelectChanged()</slot>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionNewInput</sender>
+   <signal>clicked()</signal>
+   <receiver>inputList</receiver>
+   <slot>onNewInput()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionDeleteSelectedInput</sender>
+   <signal>clicked()</signal>
+   <receiver>inputList</receiver>
+   <slot>onDeleteSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>inputList</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>inputList</receiver>
+   <slot>onSelectChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>Test()</slot>
  </slots>
