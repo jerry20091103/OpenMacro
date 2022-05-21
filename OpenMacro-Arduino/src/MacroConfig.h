@@ -1,18 +1,16 @@
 #ifndef MACRO_CONFIG_H
 #define MACRO_CONFIG_H
 
-#include "HID-Project.h"
-
 #define NUM_BTN_INPUTS 12
 #define MAX_PRESETS 9
 
-enum MacroMode : uint8_t
+enum MacroMode : unsigned char
 {
     KEYBAORD_MOUSE_CLICK,
     MOUSE_MOVE,
 };
 
-enum ButtonInputs : uint8_t
+enum ButtonInputs : unsigned char
 {
     // 3x3 buttons
     BTN0,
@@ -34,9 +32,9 @@ enum ButtonInputs : uint8_t
 
 struct ButtonAction
 {
-    uint8_t size;
-    uint16_t delay;
-    uint8_t *btnPress[3]; 
+    unsigned char size;
+    unsigned short delay;
+    unsigned char *btnPress[3]; 
     // keycodes defined in ImprovedKeylayouts.h, mouse button defined in MouseAPI.hpp.
     // each button press has 3 values : [modifier keycode, keycode, mouse btn]
     // the struct contains list of button press (btnPress[size][3])
@@ -45,7 +43,7 @@ struct ButtonAction
 
 struct MouseAction
 {
-    int16_t mouseMove[3]; // stores [mouseX, mouseY, wheel] (relative mouse move)
+    short mouseMove[3]; // stores [mouseX, mouseY, wheel] (relative mouse move)
 };
 
 struct MacroAction
@@ -62,7 +60,7 @@ struct MacroAction
 
 struct MacroPreset
 {   
-    uint8_t size;
+    unsigned char size;
     MacroAction *inputs; 
     // a list of button inputs, ordered as the "ButtonInputs" enum above.
     // dynamic length to allow further expansion.
@@ -70,7 +68,7 @@ struct MacroPreset
 
 struct MacroConfig
 {
-    MacroPreset presets[9];
+    MacroPreset presets[MAX_PRESETS];
 };
 
 
