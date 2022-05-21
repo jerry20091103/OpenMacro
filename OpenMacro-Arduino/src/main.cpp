@@ -6,6 +6,7 @@
     u8g2 by olikarus         (display driver) https://github.com/olikraus/u8g2/wiki
     IoAbstraction by davetcc (scheduling, buttons, encoders, IO expansion)  https://www.thecoderscorner.com/products/arduino-libraries/io-abstraction/
     MFRC522 by miguelbalboa  (RFID driver)
+    HID-Project by NicoHood  (extends functionality of Arduino HID library)
 */
 
 void readRfid()
@@ -45,11 +46,10 @@ void readAnalog()
 {
     u8x8.setFont(u8x8_font_7x14_1x2_n );
     u8x8.setCursor(0, 38);
-    u8x8.print("                    "); // overwrite old numbers
+    u8x8.print("             "); // overwrite old numbers
     u8x8.setCursor(0, 38);
-    u8x8.print(String(analogRead(SLIDER0)) + " " + String(analogRead(SLIDER1)) + " " + String(analogRead(JOY_X)) + " " + String(analogRead(JOY_Y)));
-    
-    u8x8.setFont(u8x8_font_8x13_1x2_r );
+    u8x8.print(String(analogRead(JOY_X)) + " " + String(analogRead(JOY_Y)));
+    u8x8.setFont(u8x8_font_8x13_1x2_r);
 }
 
 void setup()
@@ -64,7 +64,9 @@ void setup()
 
     taskManager.scheduleFixedRate(100, readRfid);
     taskManager.scheduleFixedRate(10, receiveSerial);
-    //taskManager.scheduleFixedRate(100, readAnalog);
+    taskManager.scheduleFixedRate(100, readAnalog);
+
+    Serial.println("Setup Complete");
 }
 
 void loop()

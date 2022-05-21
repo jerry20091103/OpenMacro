@@ -9,6 +9,14 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     u8x8.print("Press:" + String(pin) + "    ");
     u8x8.setCursor(0, 18);
     u8x8.print("isHeld: " + String(isHeld) + "    ");
+
+    // !DEBUG
+    // hold BTN0 to stop keyboard library in case of an bug
+    if(pin == BTN0_PIN && isHeld)
+    {
+        Serial.println("EMERGENCY STOP");
+        while (true) {}
+    }
 }
 
 void BtnReleaseCallback(pinid_t pin, bool isHeld)

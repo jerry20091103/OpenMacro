@@ -5,11 +5,6 @@ HardwareRotaryEncoder *enc0;
 MFRC522 rfid;
 U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
 
-const char pgmLayout[] PROGMEM = "123456789";
-KeyboardLayout layout(3, 3, pgmLayout);
-MatrixKeyboardManager keyboard;
-KeyMatrixListener myKeyMatrixListener;
-
 void HardwareSetup()
 {
     // We use IOAbstraction library to handle switches and rotary encoders.
@@ -27,30 +22,36 @@ void HardwareSetup()
     enc0->changePrecision(0, 0);
 
     //* setup buttons
-    switches.addSwitch(BTN_ENC, BtnPressCallback);
-    switches.addSwitch(BTN_JOY, BtnPressCallback);
+    switches.addSwitch(BTN_ENC_PIN, BtnPressCallback);
+    switches.addSwitch(BTN_JOY_PIN, BtnPressCallback);
+    switches.addSwitch(BTN0_PIN, BtnPressCallback);
+    switches.addSwitch(BTN1_PIN, BtnPressCallback);
+    switches.addSwitch(BTN2_PIN, BtnPressCallback);
+    switches.addSwitch(BTN3_PIN, BtnPressCallback);
+    switches.addSwitch(BTN4_PIN, BtnPressCallback);
+    switches.addSwitch(BTN5_PIN, BtnPressCallback);
+    switches.addSwitch(BTN6_PIN, BtnPressCallback);
+    switches.addSwitch(BTN7_PIN, BtnPressCallback);
+    switches.addSwitch(BTN8_PIN, BtnPressCallback);
 
     // addSwitch() only binds a callback for button press, we need to bind button release callback separetely.
-    switches.onRelease(BTN_ENC, BtnReleaseCallback);
-    switches.onRelease(BTN_JOY, BtnReleaseCallback);
+    switches.onRelease(BTN_ENC_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN_JOY_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN0_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN1_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN2_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN3_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN4_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN5_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN6_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN7_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN8_PIN, BtnReleaseCallback);
 
-    //* setup key matrix
-    layout.setRowPin(0, ROW0);
-    layout.setRowPin(1, ROW1);
-    layout.setRowPin(2, ROW2);
-    layout.setColPin(0, COL0);
-    layout.setColPin(1, COL1);
-    layout.setColPin(2, COL2);
-    keyboard.initialise(ioUsingArduino(), &layout, &myKeyMatrixListener);
-
-    //* setup sliders and joystick
-    ioDevicePinMode(ioUsingArduino(), SLIDER0, INPUT);
-    ioDevicePinMode(ioUsingArduino(), SLIDER1, INPUT);
+    //* setup joystick
     ioDevicePinMode(ioUsingArduino(), JOY_X, INPUT);
     ioDevicePinMode(ioUsingArduino(), JOY_Y, INPUT);
 
     //* setup display
-    // TODO
     u8x8.begin();
     u8x8.clear();
     u8x8.setFont(u8x8_font_8x13_1x2_r); // choose a suitable font
@@ -58,10 +59,14 @@ void HardwareSetup()
     u8x8.print("hello world");      // write something to the internal memory
 
     //* setup RFID
-    // TODO
     SPI.begin();
     rfid.PCD_Init(RFID_SS, RFID_RST);
     Serial.print("RFID reader :");
     rfid.PCD_DumpVersionToSerial();
     Serial.println();
+
+    //*  start keyboard library
+    Keyboard.begin();
+    Mouse.begin();
+    Gamepad.begin();
 }

@@ -5,41 +5,29 @@
 #include "TaskManagerIO.h"
 #include "MFRC522.h"
 #include "u8g2lib.h"
-#include "Keyboard.h"
-#include <KeyboardManager.h>
+#include "HID-Project.h"
 
 // *Pins
 // Rotray Encoders and buttons
 #define ENCA 7
 #define ENCB 12
-#define BTN_ENC 22
+#define BTN_ENC_PIN 22
 
-#define COL0 9
-#define COL1 8
-#define COL2 6
-#define ROW0 5
-#define ROW1 4
-#define ROW2 11
-
-// button number for key matrix
-#define BTN0 0
-#define BTN1 1
-#define BTN2 2
-#define BTN3 3
-#define BTN4 4
-#define BTN5 5
-#define BTN6 6
-#define BTN7 7
-#define BTN8 8
-
-// sliders
-#define SLIDER0 A0
-#define SLIDER1 A1
+// buttons
+#define BTN0_PIN 9
+#define BTN1_PIN 8
+#define BTN2_PIN 6
+#define BTN3_PIN 5
+#define BTN4_PIN 4
+#define BTN5_PIN 18
+#define BTN6_PIN 19
+#define BTN7_PIN 13
+#define BTN8_PIN 11
 
 // joysticks
 #define JOY_X A5
 #define JOY_Y A3
-#define BTN_JOY 20
+#define BTN_JOY_PIN 20
 
 // rfid
 #define RFID_SS 10
