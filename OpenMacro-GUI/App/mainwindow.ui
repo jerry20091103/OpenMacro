@@ -38,7 +38,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
@@ -47,6 +47,39 @@
         <property name="title">
          <string>Configure Inputs</string>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="9,1">
+         <item>
+          <widget class="InputList" name="inputList">
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="itemAlignment">
+            <set>Qt::AlignLeading</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="actionNewInput">
+             <property name="text">
+              <string>New Input</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="actionDeleteSelectedInput">
+             <property name="text">
+              <string>Delete Selected</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -54,6 +87,25 @@
         <property name="title">
          <string>Input Macro</string>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QScrollArea" name="scrollArea_2">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>345</width>
+              <height>405</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -158,54 +210,64 @@
     <slot>onSavePreset()</slot>
    </slots>
   </customwidget>
+  <customwidget>
+   <class>InputList</class>
+   <extends>QListWidget</extends>
+   <header>App/inputlist.h</header>
+   <slots>
+    <slot>onNewInput()</slot>
+    <slot>onDeleteSelected()</slot>
+    <slot>onSelectChanged()</slot>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>actionCreateNewPreset</sender>
-   <signal>triggered()</signal>
-   <receiver>menuPresets</receiver>
-   <slot>onCreateNewPreset()</slot>
+   <sender>actionNewInput</sender>
+   <signal>clicked()</signal>
+   <receiver>inputList</receiver>
+   <slot>onNewInput()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>109</x>
+     <y>501</y>
     </hint>
     <hint type="destinationlabel">
-     <x>91</x>
-     <y>62</y>
+     <x>197</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionLoadPreset</sender>
-   <signal>triggered()</signal>
-   <receiver>menuPresets</receiver>
-   <slot>onLoadPreset()</slot>
+   <sender>actionDeleteSelectedInput</sender>
+   <signal>clicked()</signal>
+   <receiver>inputList</receiver>
+   <slot>onDeleteSelected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>286</x>
+     <y>501</y>
     </hint>
     <hint type="destinationlabel">
-     <x>91</x>
-     <y>62</y>
+     <x>197</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionSavePreset</sender>
-   <signal>triggered()</signal>
-   <receiver>menuPresets</receiver>
-   <slot>onSavePreset()</slot>
+   <sender>inputList</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>inputList</receiver>
+   <slot>onSelectChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>197</x>
+     <y>294</y>
     </hint>
     <hint type="destinationlabel">
-     <x>91</x>
-     <y>62</y>
+     <x>197</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
