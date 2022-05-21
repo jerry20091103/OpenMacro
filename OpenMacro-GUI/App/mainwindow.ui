@@ -98,12 +98,12 @@
   </action>
   <action name="actionImport">
    <property name="text">
-    <string>Import</string>
+    <string>Load Preset</string>
    </property>
   </action>
   <action name="actionExport">
    <property name="text">
-    <string>Export</string>
+    <string>Save Preset</string>
    </property>
   </action>
   <action name="actionTest_Serial_Write">
@@ -123,7 +123,7 @@
   </action>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>New Preset</string>
    </property>
   </action>
  </widget>
