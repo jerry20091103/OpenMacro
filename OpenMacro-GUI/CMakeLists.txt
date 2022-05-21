@@ -16,15 +16,16 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Ser
 
 set(TS_FILES OpenMacro-GUI_zh_TW.ts)
 
+# The path from CMakeLists.txt to MacroConfig.h
+set(MACRO_CONFIG_FILE ../OpenMacro-Arduino/src/MacroConfig.h)
+
 set(PROJECT_SOURCES
         main.cpp
-        App/mainwindow.cpp
-        App/mainwindow.h
-        App/mainwindow.ui
-        App/debugmenu.h
-        App/debugmenu.cpp
-        Core/preset.h
-        Core/preset.cpp
+        App/mainwindow.cpp App/mainwindow.h App/mainwindow.ui
+        App/debugmenu.h App/debugmenu.cpp
+        App/presetmenu.h App/presetmenu.cpp
+        Core/preset.h Core/preset.cpp
+        ${MACRO_CONFIG_FILE}
         ${TS_FILES}
 )
 

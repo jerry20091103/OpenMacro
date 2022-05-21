@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->menuPresets->injectDependencies(
+                ui->fileNameLabel,
+                ui->actionSavePreset);
 }
 
 MainWindow::~MainWindow()
