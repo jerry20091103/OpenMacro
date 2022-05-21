@@ -22,17 +22,10 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
-      <item>
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string>Select Preset</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QGroupBox" name="groupBox_3">
         <property name="title">
@@ -64,6 +57,7 @@
     <property name="title">
      <string>Files</string>
     </property>
+    <addaction name="actionNew"/>
     <addaction name="actionImport"/>
     <addaction name="actionExport"/>
    </widget>
@@ -104,12 +98,12 @@
   </action>
   <action name="actionImport">
    <property name="text">
-    <string>Import</string>
+    <string>Load Preset</string>
    </property>
   </action>
   <action name="actionExport">
    <property name="text">
-    <string>Export</string>
+    <string>Save Preset</string>
    </property>
   </action>
   <action name="actionTest_Serial_Write">
@@ -122,12 +116,22 @@
     <string>Test Serial Read</string>
    </property>
   </action>
+  <action name="actionTest_Exception">
+   <property name="text">
+    <string>Test Exception</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New Preset</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>DebugMenu</class>
    <extends>QMenu</extends>
-   <header>debugmenu.h</header>
+   <header>App/debugmenu.h</header>
    <slots>
     <slot>onTestSerialWrite()</slot>
     <slot>onTestSerialRead()</slot>
@@ -135,40 +139,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>actionTest_Serial_Write</sender>
-   <signal>triggered()</signal>
-   <receiver>menuDebug</receiver>
-   <slot>onTestSerialWrite()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>84</x>
-     <y>50</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTest_Serial_Read</sender>
-   <signal>triggered()</signal>
-   <receiver>menuDebug</receiver>
-   <slot>onTestSerialRead()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>84</x>
-     <y>50</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>Test()</slot>
  </slots>

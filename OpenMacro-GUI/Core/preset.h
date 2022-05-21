@@ -17,6 +17,4 @@ public:
     static const QString fileExtension;
 };
 
-const QString Preset::fileExtension = ".omp"; // OMP -> Open Macro Preset
-
 #endif // PRESET_H

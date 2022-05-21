@@ -2,6 +2,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+const QString Preset::fileExtension = ".omp"; // OMP -> Open Macro Preset
+
 Preset::Preset()
 {
 
