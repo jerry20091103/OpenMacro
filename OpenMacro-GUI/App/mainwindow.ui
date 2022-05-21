@@ -20,7 +20,23 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,12">
+    <item>
+     <widget class="QLabel" name="fileNameLabel">
+      <property name="frameShape">
+       <enum>QFrame::Panel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+      <property name="text">
+       <string>Current File: None</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
       <property name="sizeConstraint">
@@ -53,13 +69,13 @@
      <height>26</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFiles">
+   <widget class="PresetMenu" name="menuPresets">
     <property name="title">
-     <string>Files</string>
+     <string>Presets</string>
     </property>
-    <addaction name="actionNew"/>
-    <addaction name="actionImport"/>
-    <addaction name="actionExport"/>
+    <addaction name="actionCreateNewPreset"/>
+    <addaction name="actionLoadPreset"/>
+    <addaction name="actionSavePreset"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -80,7 +96,7 @@
     <addaction name="actionTest_Serial_Write"/>
     <addaction name="actionTest_Serial_Read"/>
    </widget>
-   <addaction name="menuFiles"/>
+   <addaction name="menuPresets"/>
    <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
    <addaction name="menuDebug"/>
@@ -96,12 +112,12 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionImport">
+  <action name="actionLoadPreset">
    <property name="text">
     <string>Load Preset</string>
    </property>
   </action>
-  <action name="actionExport">
+  <action name="actionSavePreset">
    <property name="text">
     <string>Save Preset</string>
    </property>
@@ -116,14 +132,9 @@
     <string>Test Serial Read</string>
    </property>
   </action>
-  <action name="actionTest_Exception">
+  <action name="actionCreateNewPreset">
    <property name="text">
-    <string>Test Exception</string>
-   </property>
-  </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>New Preset</string>
+    <string>Create New Preset</string>
    </property>
   </action>
  </widget>
@@ -137,9 +148,68 @@
     <slot>onTestSerialRead()</slot>
    </slots>
   </customwidget>
+  <customwidget>
+   <class>PresetMenu</class>
+   <extends>QMenu</extends>
+   <header>App/presetmenu.h</header>
+   <slots>
+    <slot>onCreateNewPreset()</slot>
+    <slot>onLoadPreset()</slot>
+    <slot>onSavePreset()</slot>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionCreateNewPreset</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onCreateNewPreset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLoadPreset</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onLoadPreset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSavePreset</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onSavePreset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>Test()</slot>
  </slots>

@@ -24,7 +24,7 @@ void Preset::readFrom(QString fileName)
     file.close();
 }
 
-void Preset::saveAs(QString fileName)
+void Preset::saveAs(QString fileName) const
 {
     if(!fileName.endsWith(Preset::fileExtension))
         throw "Expected preset file to end with " + Preset::fileExtension;
@@ -40,4 +40,14 @@ void Preset::saveAs(QString fileName)
         throw "Failed to flush file while saving.";
 
     file.close();
+}
+
+void Preset::loadFromSerial(QString portName)
+{
+
+}
+
+void Preset::uploadToSerial(QString portName)
+{
+
 }
