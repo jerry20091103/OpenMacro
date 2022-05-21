@@ -4,6 +4,9 @@
 #define NUM_BTN_INPUTS 12
 #define MAX_PRESETS 9
 #define MAX_PASSWORDS 9
+#define MAX_PASSWORD_LEN 20
+#define MAX_EXPANDERS 2
+#define COMMAND_BUF_SIZE 1000
 
 #include <stdint.h>
 
@@ -13,6 +16,7 @@ enum MacroMode : uint8_t
     MOUSE_MOVE,
 };
 
+// a total of 12 internal inputs
 enum ButtonInputs : uint8_t
 {
     // 3x3 buttons
@@ -36,7 +40,7 @@ enum ButtonInputs : uint8_t
 struct MacroPassword
 {
     uint16_t size;
-    char *str;
+    char str[MAX_PASSWORD_LEN];
 };
 
 struct MacroAction
@@ -44,136 +48,47 @@ struct MacroAction
     MacroMode mode;
     uint8_t size;
     uint16_t delay;
-    int16_t mouseMove[3];
-    uint8_t *btnPress[3];
+    char *data;
     // keycodes defined in ImprovedKeylayouts.h, mouse button defined in MouseAPI.hpp.
-    // each button press has 3 values : [modifier keycode, keycode, mouse btn]
-    // the struct contains list of button press (btnPress[size][3])
-    // the "delay" stores the time interval between each key presses.
-    // mouseMove stores [mouseX, mouseY, wheel] (relative mouse move)
+    // for MOUSE_MOVE mode:
+    //      int16_t[3]  -> [mouseX, mouseY, wheel] (relative mouse move)
+    // for KEYBAORD_MOUSE_CLICK mode:
+    //      uint8_t[3]  -> [modifier keycode, keycode, mouse btn]
+    // "data" points to the first action in commandBuffer, where a list of button press or mouse moves is stored one after another.
+    // "delay" stores the time interval between each key presses / mouse move
+    // "size" is the size of "data" in chars.
 };
 
 struct MacroPreset
 {
-    uint8_t size;
+    uint8_t numInputs;
     MacroAction *inputs;
     // a list of button inputs, ordered as the "ButtonInputs" enum above.
-    // dynamic length to allow further expansion.
+    // "numInputs" is the total number of input pins used.
+    // "inputs" points to the first MacroAction (aka BTN0's macro)
+    // Expanded pin comes right after internal pins (starting from inputs[13])
 };
 
 struct MacroConfig
 {
+    uint8_t expanderAddr[MAX_EXPANDERS];
     MacroPreset presets[MAX_PRESETS];
     MacroPassword passwords[MAX_PASSWORDS];
+    char commamdBuffer[COMMAND_BUF_SIZE];
+    // Each IO expander provides additional 16 pins.
+    // We plan to use MCP23017 I2C expander IC.
+    // Expanded pins starts from 13 (ex. expander 1: 13 ~ 29; expander 2: 30 ~ 46)
+    // "expandeAddr" stores the 8bit address for each IO expander
 };
 
 void SerializeConfig(MacroConfig *config, char *data)
 {
-    uint8_t *p8 = (uint8_t *)data;
-    // presets
-    for (int i = 0; i < MAX_PRESETS; i++)
-    {
-        *p8 = config->presets[i].size;
-        p8++;
-        for (int input = 0; i < config->presets[i].size; i++)
-        {
-            *p8 = config->presets[i].inputs[input].mode;
-            p8++;
-            *p8 = config->presets[i].inputs[input].size;
-            p8++;
-
-            uint16_t *p_uint16_t = (uint16_t *)p8;
-            *p_uint16_t = config->presets[i].inputs[input].delay;
-            p_uint16_t++;
-
-            int16_t *p_int16_t = (int16_t *)p_uint16_t;
-            *p_int16_t = config->presets[i].inputs[input].mouseMove[0];
-            p_int16_t++;
-            *p_int16_t = config->presets[i].inputs[input].mouseMove[1];
-            p_int16_t++;
-            *p_int16_t = config->presets[i].inputs[input].mouseMove[2];
-            p_int16_t++;
-
-            p8 = (uint8_t *)p_int16_t;
-            for (int press = 0; press < config->presets[i].inputs[input].size * 3; i++)
-            {
-                *p8 = *config->presets[i].inputs[input].btnPress[press];
-                p8++;
-            }
-        }
-    }
-    // passwords
-    for (int i = 0; i < MAX_PASSWORDS; i++)
-    {
-        *p8 = config->passwords[i].size;
-        p8++;
-
-        char *p_char = (char *)p8;
-        for (int len = 0; len < config->passwords[i].size; len++)
-        {
-            *p_char = config->passwords->str[len];
-            p_char++;
-        }
-    }
+    data = (char *)config;
 }
 
 void DeserializeConfig(char *data, MacroConfig *config)
 {
-    uint8_t *p8 = (uint8_t *)data;
-    // presets
-    for (int i = 0; i < MAX_PRESETS; i++)
-    {
-        config->presets[i].size = *p8;
-        p8++;
-
-        config->presets[i].inputs = new MacroAction[config->presets[i].size];
-
-        for (int input = 0; i < config->presets[i].size; i++)
-        {
-            config->presets[i].inputs[input].mode = (MacroMode)*p8;
-            p8++;
-            config->presets[i].inputs[input].size = *p8;
-            p8++;
-
-            uint16_t *p_uint16_t = (uint16_t *)p8;
-            config->presets[i].inputs[input].delay = *p_uint16_t;
-            p_uint16_t++;
-
-            int16_t *p_int16_t = (int16_t *)p_uint16_t;
-            config->presets[i].inputs[input].mouseMove[0] = *p_uint16_t;
-            p_int16_t++;
-            config->presets[i].inputs[input].mouseMove[1] = *p_uint16_t;
-            p_int16_t++;
-            config->presets[i].inputs[input].mouseMove[2] = *p_uint16_t;
-            p_int16_t++;
-
-            p8 = (uint8_t *)p_int16_t;
-
-            config->presets[i].inputs[input].btnPress[0] = new uint8_t[config->presets[i].inputs[input].size * 3];
-
-            for (int press = 0; press < config->presets[i].inputs[input].size * 3; i++)
-            {
-                *config->presets[i].inputs[input].btnPress[press] = *p8;
-                p8++;
-            }
-        }
-    }
-    // passwords
-    for (int i = 0; i < MAX_PASSWORDS; i++)
-    {
-        config->passwords[i].size = *p8;
-        p8++;
-
-        char *p_char = (char *)p8;
-
-        config->passwords[i].str = new char[config->passwords[i].size];
-
-        for (int len = 0; len < config->passwords[i].size; len++)
-        {
-            *p_char = config->passwords->str[len];
-            p_char++;
-        }
-    }
+    config = (MacroConfig *)data;
 }
 
 #endif
