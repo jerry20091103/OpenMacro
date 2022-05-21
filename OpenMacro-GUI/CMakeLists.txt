@@ -18,11 +18,13 @@ set(TS_FILES OpenMacro-GUI_zh_TW.ts)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        debugmenu.h
-        debugmenu.cpp
+        App/mainwindow.cpp
+        App/mainwindow.h
+        App/mainwindow.ui
+        App/debugmenu.h
+        App/debugmenu.cpp
+        Core/preset.h
+        Core/preset.cpp
         ${TS_FILES}
 )
 
