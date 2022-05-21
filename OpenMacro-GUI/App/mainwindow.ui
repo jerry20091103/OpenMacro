@@ -131,7 +131,7 @@
   <customwidget>
    <class>DebugMenu</class>
    <extends>QMenu</extends>
-   <header>debugmenu.h</header>
+   <header>App/debugmenu.h</header>
    <slots>
     <slot>onTestSerialWrite()</slot>
     <slot>onTestSerialRead()</slot>
