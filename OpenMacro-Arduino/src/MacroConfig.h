@@ -6,6 +6,7 @@
 #define MAX_PASSWORDS 9
 #define MAX_PASSWORD_LEN 20
 #define MAX_EXPANDERS 2
+#define MAX_INPUTS (NUM_BTN_INPUTS + MAX_EXPANDERS * 16)
 #define COMMAND_BUF_SIZE 512
 
 #include <stdint.h>
@@ -64,7 +65,7 @@ struct MacroConfig
 {
     uint8_t expanderAddr[MAX_EXPANDERS];
     uint8_t numInputs;
-    MacroAction inputs[12 + MAX_EXPANDERS * 16];
+    MacroAction inputs[MAX_INPUTS];
     MacroPassword passwords[MAX_PASSWORDS];
     char commamdBuffer[COMMAND_BUF_SIZE];
     // Each IO expander provides additional 16 pins.
