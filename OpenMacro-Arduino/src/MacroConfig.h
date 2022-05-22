@@ -9,6 +9,7 @@
 #define COMMAND_BUF_SIZE 1000
 
 #include <stdint.h>
+#include <string.h>
 
 enum MacroMode : uint8_t
 {
@@ -83,12 +84,12 @@ struct MacroConfig
 
 void SerializeConfig(MacroConfig *config, char *data)
 {
-    data = (char *)config;
+    memcpy(data, config, sizeof(MacroConfig));
 }
 
 void DeserializeConfig(char *data, MacroConfig *config)
 {
-    config = (MacroConfig *)data;
+    memcpy(config, data, sizeof(MacroConfig));
 }
 
 #endif
