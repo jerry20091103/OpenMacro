@@ -49,7 +49,7 @@ struct MacroAction
     MacroMode mode;
     uint8_t size;
     uint16_t delay;
-    uint16_t *data;
+    uint16_t data;
     // keycodes defined in ImprovedKeylayouts.h, mouse button defined in MouseAPI.hpp.
     // for MOUSE_MOVE mode:
     //      int16_t[3]  -> [mouseX, mouseY, wheel] (relative mouse move)
