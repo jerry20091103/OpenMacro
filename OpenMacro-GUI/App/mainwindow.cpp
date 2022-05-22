@@ -8,7 +8,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->menuPresets->injectDependencies(
                 ui->fileNameLabel,
-                ui->actionSavePreset);
+                ui->actionSavePreset,
+                ui->actionSavePresetAuto,
+                ui->inputList);
+    ui->inputList->injectDependencies(
+                ui->menuPresets,
+                ui->actionNewInput,
+                ui->actionDeleteSelectedInput);
 //    for(int i = 0; i < 10; ++i)
 //        ui->inputList->addItem("Test " + QString::number(i));
 }

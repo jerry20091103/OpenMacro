@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
         App/presetmenu.h App/presetmenu.cpp
         App/inputlist.h App/inputlist.cpp
         Core/preset.h Core/preset.cpp
+        commons.h
+        exceptionhandler.h
         ${MACRO_CONFIG_FILES}
         ${TS_FILES}
 )

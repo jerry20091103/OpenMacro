@@ -13,7 +13,7 @@
 
 enum MacroMode : uint8_t
 {
-    KEYBAORD_MOUSE_CLICK,
+    KEYBOARD_MOUSE_CLICK,
     MOUSE_MOVE,
 };
 
@@ -75,15 +75,5 @@ struct MacroConfig
     // "inputs" is an array of button inputs, ordered as the "ButtonInputs" enum above.
     // Expanded pin comes right after internal pins (starting from inputs[13])
 };
-
-void SerializeConfig(MacroConfig *config, char *data)
-{
-    memcpy(data, config, sizeof(MacroConfig));
-}
-
-void DeserializeConfig(char *data, MacroConfig *config)
-{
-    memcpy(config, data, sizeof(MacroConfig));
-}
 
 #endif

@@ -127,6 +127,7 @@
     </property>
     <addaction name="actionCreateNewPreset"/>
     <addaction name="actionLoadPreset"/>
+    <addaction name="actionSavePresetAuto"/>
     <addaction name="actionSavePreset"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -171,7 +172,7 @@
   </action>
   <action name="actionSavePreset">
    <property name="text">
-    <string>Save Preset</string>
+    <string>Save Preset As</string>
    </property>
   </action>
   <action name="actionTest_Serial_Write">
@@ -187,6 +188,11 @@
   <action name="actionCreateNewPreset">
    <property name="text">
     <string>Create New Preset</string>
+   </property>
+  </action>
+  <action name="actionSavePresetAuto">
+   <property name="text">
+    <string>Save Preset</string>
    </property>
   </action>
  </widget>
@@ -208,6 +214,7 @@
     <slot>onCreateNewPreset()</slot>
     <slot>onLoadPreset()</slot>
     <slot>onSavePreset()</slot>
+    <slot>onSavePresetAuto()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -268,6 +275,102 @@
     <hint type="destinationlabel">
      <x>197</x>
      <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTest_Serial_Read</sender>
+   <signal>triggered()</signal>
+   <receiver>menuDebug</receiver>
+   <slot>onTestSerialRead()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>84</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTest_Serial_Write</sender>
+   <signal>triggered()</signal>
+   <receiver>menuDebug</receiver>
+   <slot>onTestSerialWrite()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>84</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCreateNewPreset</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onCreateNewPreset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLoadPreset</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onLoadPreset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSavePreset</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onSavePreset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSavePresetAuto</sender>
+   <signal>triggered()</signal>
+   <receiver>menuPresets</receiver>
+   <slot>onSavePresetAuto()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
