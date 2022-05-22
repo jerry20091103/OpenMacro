@@ -1,3 +1,4 @@
+#include <stdint.h>
 #ifndef ARDUINO_AVR_MICRO
 
 #define MOUSE_LEFT		(1 << 0)
