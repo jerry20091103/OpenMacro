@@ -45,20 +45,29 @@ struct MacroPassword
     char str[MAX_PASSWORD_LEN];
 };
 
-struct MacroAction
+struct MacroPacket
 {
     MacroMode mode;
-    uint8_t size;
-    uint16_t delay;
-    uint16_t data;
-    // keycodes defined in ImprovedKeylayouts.h, mouse button defined in MouseAPI.hpp.
+    union
+    {
+        uint16_t mouseMove[3];
+        uint8_t keycode[3];
+    };
+    // keycodes and mouse buttons defined in Keycodes.h
     // for MOUSE_MOVE mode:
     //      int16_t[3]  -> [mouseX, mouseY, wheel] (relative mouse move)
     // for KEYBAORD_MOUSE_CLICK mode:
     //      uint8_t[3]  -> [modifier keycode, keycode, mouse btn]
-    // "data" points to the first action in commandBuffer (commandBuffer[data]), where a list of button press or mouse moves is stored one after another.
+};
+
+struct MacroAction
+{
+    uint8_t size;
+    uint16_t delay;
+    uint16_t data;
+    // "data" points to the first MacroPacket in commandBuffer (commandBuffer[data]), where a list of MacroPacket is stored one after another.(tightly packed)
     // "delay" stores the time interval between each key presses / mouse move
-    // "size" is the size of "data" in chars.
+    // "size" number of macro packets in the commandBuffer
 };
 
 struct MacroConfig
