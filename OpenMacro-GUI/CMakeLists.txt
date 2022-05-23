@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         App/debugmenu.h App/debugmenu.cpp
         App/presetmenu.h App/presetmenu.cpp
         App/inputlist.h App/inputlist.cpp
+        App/commandlist.h App/commandlist.cpp
+        App/configmacroform.h App/configmacroform.cpp
         Core/preset.h Core/preset.cpp
         commons.h
         exceptionhandler.h

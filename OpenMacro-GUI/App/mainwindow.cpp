@@ -14,7 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->inputList->injectDependencies(
                 ui->menuPresets,
                 ui->actionNewInput,
-                ui->actionDeleteSelectedInput);
+                ui->actionDeleteSelectedInput,
+                ui->commandList);
+    ui->commandList->injectDependencies(
+                ui->inputList,
+                ui->configMacroForm);
+    ui->configMacroForm->injectDependencies(
+                ui->commandList);
 //    for(int i = 0; i < 10; ++i)
 //        ui->inputList->addItem("Test " + QString::number(i));
 }

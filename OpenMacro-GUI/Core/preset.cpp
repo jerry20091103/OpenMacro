@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QCryptographicHash>
 
 const QString Preset::fileExtension = ".omp"; // OMP -> Open Macro Preset
 const char* macroModeName[] = { "button", "pointer" };
@@ -41,7 +42,8 @@ void Preset::popInput()
 
 Preset::Preset()
 {
-
+    // Default inputs that would make more sense having MOUSE_MOVE as default.
+    inputs[BTN_JOY].mode = inputs[ENC_DEC].mode = inputs[ENC_INC].mode = MacroMode::MOUSE_MOVE;
 }
 
 void Preset::readFrom(QString fileName)

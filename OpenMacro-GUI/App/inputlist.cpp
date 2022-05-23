@@ -4,11 +4,12 @@ InputList::InputList(QWidget *parent) : QListWidget(parent) {
 
 }
 
-void InputList::injectDependencies(PresetMenu* presetMenu, QPushButton *newAction, QPushButton *deleteAction)
+void InputList::injectDependencies(PresetMenu* presetMenu, QPushButton *newAction, QPushButton *deleteAction, CommandList *commandList)
 {
     this->presetMenu = presetMenu;
     this->newAction = newAction;
     this->deleteAction = deleteAction;
+    this->commandList = commandList;
     updateButtonStates();
 }
 

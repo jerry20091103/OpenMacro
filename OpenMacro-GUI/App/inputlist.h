@@ -4,18 +4,20 @@
 #include <QListWidget>
 #include <QPushButton>
 #include "./presetmenu.h"
-
+#include "./commandlist.h"
 class PresetMenu;
+class CommandList;
 
 class InputList : public QListWidget
 {
     Q_OBJECT
     PresetMenu* presetMenu;
+    CommandList* commandList;
     QPushButton* newAction;
     QPushButton* deleteAction;
 public:
     InputList(QWidget *parent = nullptr);
-    void injectDependencies(PresetMenu* presetMenu, QPushButton* newAction, QPushButton* deleteAction);
+    void injectDependencies(PresetMenu* presetMenu, QPushButton* newAction, QPushButton* deleteAction, CommandList* commandList);
     void updateButtonStates();
 public slots:
     void onNewInput();

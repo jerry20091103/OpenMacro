@@ -12,6 +12,7 @@ class Preset
         uint8_t delay = 1;
         QString commands = "";
     };
+    MacroPassword passwords[MAX_PASSWORDS];
     std::vector<Input> inputs = std::vector<Input>(NUM_BTN_INPUTS);
 public:
     Preset();
