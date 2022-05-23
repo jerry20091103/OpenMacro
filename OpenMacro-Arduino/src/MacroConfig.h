@@ -45,19 +45,30 @@ struct MacroPassword
     char str[MAX_PASSWORD_LEN];
 };
 
+struct MouseMove 
+{
+  int16_t mouseX;
+  int16_t mouseY;
+  int16_t wheel;
+  uint8_t mouseBbtn;
+  // mouseBtn defaults to click drag, for click only, set mouseX, Y to 0.
+};
+
 struct MacroPacket
 {
     MacroMode mode;
+    uint8_t modifierCode;
     union
     {
-        uint16_t mouseMove[3];
-        uint8_t keycode[3];
+        MouseMove mouseMove;
+        uint8_t keycode;
     };
-    // keycodes and mouse buttons defined in Keycodes.h
+    // keycodes and mouse buttons defined in Keycodes.h.
+    // "modifierCode" key is pressed throughout the whole MacroPacket.
     // for MOUSE_MOVE mode:
-    //      int16_t[3]  -> [mouseX, mouseY, wheel] (relative mouse move)
+    //      MouseMove struct (relative mouse move)
     // for KEYBAORD_MOUSE_CLICK mode:
-    //      uint8_t[3]  -> [modifier keycode, keycode, mouse btn]
+    //      uint8_t keycode
 };
 
 struct MacroAction
