@@ -83,7 +83,6 @@ struct MacroConfig
     uint8_t expanderAddr[MAX_EXPANDERS];
     uint8_t numInputs;
     MacroAction inputs[MAX_INPUTS];
-    MacroPassword passwords[MAX_PASSWORDS];
     char commamdBuffer[COMMAND_BUF_SIZE];
     // Each IO expander provides additional 16 pins.
     // We plan to use MCP23017 I2C expander IC.
@@ -93,5 +92,11 @@ struct MacroConfig
     // "inputs" is an array of button inputs, ordered as the "ButtonInputs" enum above.
     // Expanded pin comes right after internal pins (starting from inputs[13])
 };
+
+struct PasswordConfig
+{
+    MacroPassword passwords[MAX_PASSWORDS];
+};
+
 
 #endif
