@@ -6,6 +6,7 @@
 #include "MFRC522.h"
 #include "u8g2lib.h"
 #include "HID-Project.h"
+#include <EEPROM.h>
 
 // *Pins
 // Rotray Encoders and buttons
@@ -35,6 +36,10 @@
 
 // display
 #define DISPLAY_ADD 0x3c
+
+// expanders
+#define EXPANDER_PIN_OFFSET 30 
+// *pin numbers starting from 30 are external pins from expanders.
 
 // rotary encoder object
 extern HardwareRotaryEncoder* enc0;
