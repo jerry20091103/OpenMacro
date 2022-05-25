@@ -5,3 +5,6 @@ build-*
 arduino-build
 
 .vscode/c_cpp_properties.json
+
+# Kicad backup folder
+OpenMacro-PCB/OpenMacro-PCB-backups
