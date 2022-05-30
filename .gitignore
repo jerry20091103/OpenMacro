@@ -8,3 +8,5 @@ arduino-build
 
 # Kicad backup folder
 OpenMacro-PCB/OpenMacro-PCB-backups
+
+OpenMacro-PCB/*.kicad_pcb
