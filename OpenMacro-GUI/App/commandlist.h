@@ -16,6 +16,10 @@ class CommandList : public QListWidget
 public:
     CommandList(QWidget *parent = nullptr);
     void injectDependencies(InputList* inputList, ConfigMacroForm* configMacroForm);
+    void updateCurrentCommand();
+public slots:
+    void onNewCommand();
+    void onDeleteCommand();
 };
 
 #endif // COMMANDLIST_H

@@ -1,11 +1,24 @@
 #include <stdint.h>
-#ifndef ARDUINO_AVR_MICRO
+#ifndef ARDUINO_AVR_MICRO // not for use in arduino
+
+#ifndef KEYCODES_H // include guard
+#define KEYCODES_H
 
 #define MOUSE_LEFT		(1 << 0)
 #define MOUSE_RIGHT		(1 << 1)
 #define MOUSE_MIDDLE	(1 << 2)
 #define MOUSE_PREV		(1 << 3)
 #define MOUSE_NEXT		(1 << 4)
+
+#ifdef QT
+#include <QObject>
+// Wrap KeyboardKeycode enum in a QObject so we can iterate through its members with reflection
+class InoInterface : public QObject
+{
+    Q_OBJECT
+public:
+    InoInterface (void) {};
+#endif
 
 enum KeyboardKeycode : uint8_t {
     KEY_RESERVED        =  0,
@@ -468,5 +481,12 @@ enum KeyboardKeycode : uint8_t {
     HID_KEYBOARD_RIGHT_ALT  = 0xE6,
     HID_KEYBOARD_RIGHT_GUI  = 0xE7,
 };
+
+#ifdef QT
+Q_ENUM(KeyboardKeycode)
+};
+#endif
+
+#endif
 
 #endif

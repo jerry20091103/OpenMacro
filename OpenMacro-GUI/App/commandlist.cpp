@@ -10,3 +10,18 @@ void CommandList::injectDependencies(InputList *inputList, ConfigMacroForm *conf
     this->inputList = inputList;
     this->configMacroForm = configMacroForm;
 }
+
+void CommandList::updateCurrentCommand()
+{
+    
+}
+
+void CommandList::onNewCommand()
+{
+    
+}
+
+void CommandList::onDeleteCommand()
+{
+    
+}

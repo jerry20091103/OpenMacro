@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>774</width>
-    <height>571</height>
+    <height>598</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -401,6 +401,41 @@
               </layout>
              </widget>
             </item>
+            <item>
+             <widget class="QWidget" name="horizontalWidget_3" native="true">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0">
+               <property name="spacing">
+                <number>7</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_7">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Modifier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="modifierInput">
+                 <property name="placeholderText">
+                  <string>None Selected</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -530,12 +565,19 @@
    <class>CommandList</class>
    <extends>QListWidget</extends>
    <header>App/commandlist.h</header>
+   <slots>
+    <slot>onNewCommand()</slot>
+    <slot>onDeleteCommand()</slot>
+   </slots>
   </customwidget>
   <customwidget>
    <class>ConfigMacroForm</class>
    <extends>QGroupBox</extends>
    <header>App/configmacroform.h</header>
    <container>1</container>
+   <slots>
+    <slot>onUpdateMacro()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -681,6 +723,38 @@
     <hint type="destinationlabel">
      <x>91</x>
      <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNewCommand</sender>
+   <signal>clicked()</signal>
+   <receiver>commandList</receiver>
+   <slot>onNewCommand()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>327</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionDeleteSelectedCommand</sender>
+   <signal>clicked()</signal>
+   <receiver>commandList</receiver>
+   <slot>onDeleteCommand()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>447</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>

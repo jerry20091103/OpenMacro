@@ -20,7 +20,14 @@ MainWindow::MainWindow(QWidget *parent)
                 ui->inputList,
                 ui->configMacroForm);
     ui->configMacroForm->injectDependencies(
-                ui->commandList);
+                ui->commandList,
+                ui->mouseXInput,
+                ui->mouseYInput,
+                ui->mouseScrollInput,
+                ui->inputModeInput,
+                ui->mouseButtonInput,
+                ui->keyInput,
+                ui->modifierInput);
 //    for(int i = 0; i < 10; ++i)
 //        ui->inputList->addItem("Test " + QString::number(i));
 }
