@@ -200,7 +200,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         int bytesWritten = serialPort.write((const char*)&data);
 
         if(bytesWritten == -1) {
-            throw "Failed to write to port " + serialPort.portName() ", error: " + serialPort.errorString();
+            throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
         }
 
         if(!serialPort.waitForBytesWritten(30000)){
