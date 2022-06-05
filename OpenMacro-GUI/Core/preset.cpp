@@ -157,7 +157,7 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
         MacroConfig data;
         serialPort.read((char*)&data, sizeof(MacroConfig));
         if(!serialPort.waitForReadyRead(30000)){
-            throw "Connection timeout while reading from port " + serialPort.portName();
+            throw "Error: " + serialPort.errorString();
         }
         // Clear any existing inputs to prevent accidents.
         inputs.clear();
@@ -199,7 +199,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         // TODO: Fill in expander address later
         int bytesWritten = serialPort.write((const char*)&data);
         if(!serialPort.waitForBytesWritten(30000)){
-            throw "Connection timeout while writing to port " + serialPort.portName();
+            throw "Error: " + serialPort.errorString();
         }
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName();
