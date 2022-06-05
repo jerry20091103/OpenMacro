@@ -198,11 +198,13 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         }
         // TODO: Fill in expander address later
         int bytesWritten = serialPort.write((const char*)&data);
-        if(!serialPort.waitForBytesWritten(30000)){
-            throw "Error: " + serialPort.errorString();
-        }
+
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName();
+        }
+
+        if(!serialPort.waitForBytesWritten(30000)){
+            throw "Error: " + serialPort.errorString();
         }
         qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
     }
