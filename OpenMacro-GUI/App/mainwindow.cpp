@@ -5,8 +5,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    presetDialog = new PresetDialog(this, ui->menuPresets);
     ui->setupUi(this);
+    presetDialog = new PresetDialog(this, ui->menuPresets);
     connect(ui->actionConnectToDevice, &QAction::triggered, this, [&](bool checked){
         presetDialog->show();
     });
