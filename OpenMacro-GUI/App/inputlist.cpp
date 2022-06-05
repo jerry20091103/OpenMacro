@@ -55,8 +55,7 @@ void InputList::onSelectChanged()
 {
     qDebug() << "onSelectChanged";
     this->commandList->updateCommandList(
-                this->presetMenu->activePreset
-                    .getInputs()[this->currentRow()]
+                getCurrentInput()
                         .packets);
 }
 

@@ -3,6 +3,7 @@
 CommandList::CommandList(QWidget *parent) : QListWidget(parent)
 {
     connect(this, &CommandList::currentRowChanged, this, [&](int currentRow){
+        if(currentRow < 0) return;
         this->configMacroForm->updateForm(this->getCurrentCommand());
     });
 }
