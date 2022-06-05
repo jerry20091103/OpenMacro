@@ -44,6 +44,8 @@ void Preset::popInput()
 
 Preset::Preset()
 {
+    for(int i = 0; i < NUM_BTN_INPUTS; ++i)
+        addInput();
 }
 
 void Preset::readFrom(QString fileName)

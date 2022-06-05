@@ -15,7 +15,7 @@ public:
     };
 private:
     MacroPassword passwords[MAX_PASSWORDS];
-    std::vector<Input> inputs = std::vector<Input>(NUM_BTN_INPUTS);
+    std::vector<Input> inputs;
 public:
     Preset();
     /// Load the Preset object with JSON data from the given file.
