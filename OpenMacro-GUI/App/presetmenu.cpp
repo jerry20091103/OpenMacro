@@ -134,3 +134,15 @@ void PresetMenu::onSavePresetAuto()
     qDebug() << "onSavePresetAuto";
     savePreset(false);
 }
+
+void PresetMenu::downloadPreset(QSerialPort& serialPort)
+{
+    activePreset.loadFromSerial(serialPort);
+    activeFileName = serialPort.portName() + ".json";
+    setDirty(true);
+}
+
+void PresetMenu::uploadPreset(QSerialPort& serialPort)
+{
+    activePreset.uploadToSerial(serialPort);
+}

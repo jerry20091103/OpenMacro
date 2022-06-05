@@ -33,6 +33,8 @@ public:
     bool getDirty() const;
     void setDirty(bool newDirty);
 
+    void downloadPreset(QSerialPort &serialPort);
+    void uploadPreset(QSerialPort &serialPort);
 public slots:
     void onCreateNewPreset();
     void onLoadPreset();

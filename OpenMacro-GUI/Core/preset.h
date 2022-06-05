@@ -1,6 +1,7 @@
 #ifndef PRESET_H
 #define PRESET_H
 #include <QFile>
+#include <QSerialPort>
 #include "commons.h"
 /// An in-memory representation of a macro preset file.
 /// \brief The Preset class
@@ -22,9 +23,9 @@ public:
     /// Write the Preset object's JSON data into the given file.
     void saveAs(QString fileName) const;
     /// Load the Preset object with MacroConfig data from the given serial port.
-    void loadFromSerial(QString portName);
+    void loadFromSerial(QSerialPort &serialPort);
     /// Upoad the Preset object with MacroConfig data from the given serial port.
-    void uploadToSerial(QString portName);
+    void uploadToSerial(QSerialPort &serialPort);
 
     /// The file extension used for macro preset files.
     static const QString fileExtension;

@@ -5,7 +5,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    presetDialog = new PresetDialog(this, ui->menuPresets);
     ui->setupUi(this);
+    connect(ui->actionConnectToDevice, &QAction::triggered, this, [&](bool checked){
+        presetDialog->show();
+    });
     ui->menuPresets->injectDependencies(
                 ui->fileNameLabel,
                 ui->actionSavePreset,

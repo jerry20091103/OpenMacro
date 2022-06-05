@@ -83,7 +83,7 @@ struct MacroConfig
     uint8_t expanderAddr[MAX_EXPANDERS];
     uint8_t numInputs;
     MacroAction inputs[MAX_INPUTS];
-    char commamdBuffer[COMMAND_BUF_SIZE];
+    char commandBuffer[COMMAND_BUF_SIZE];
     // Each IO expander provides additional 16 pins.
     // We plan to use MCP23017 I2C expander IC.
     // Expanded pins starts from 13 (ex. expander 1: 13 ~ 29; expander 2: 30 ~ 46)

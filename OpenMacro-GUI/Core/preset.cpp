@@ -149,12 +149,61 @@ void Preset::saveAs(QString fileName) const
     file.close();
 }
 
-void Preset::loadFromSerial(QString portName)
+void Preset::loadFromSerial(QSerialPort& serialPort)
 {
-
+    if(serialPort.isOpen()){
+        MacroConfig data;
+        serialPort.read((char*)&data, sizeof(MacroConfig));
+        if(!serialPort.waitForReadyRead(30000)){
+            throw "Connection timeout while reading from port " + serialPort.portName();
+        }
+        // Clear any existing inputs to prevent accidents.
+        inputs.clear();
+        for(int idx = 0; idx < data.numInputs; ++idx){
+            Input input;
+            MacroAction action = data.inputs[idx];
+            input.delay = action.delay;
+            // We write MacroPackets one by one here to be on the safe side.
+            for(int jdx = 0; jdx < action.size; ++jdx){
+                MacroPacket packet;
+                std::memcpy(&packet, // write to packet struct
+                            data.commandBuffer + action.data + jdx * sizeof(MacroPacket), // start of packet
+                            sizeof(MacroPacket)); // size is just the MacroPacket size
+                input.packets.push_back(packet);
+            }
+            inputs.push_back(input);
+        }
+    }
+    else throw "Port " + serialPort.portName() + " is not open.";
 }
 
-void Preset::uploadToSerial(QString portName)
+void Preset::uploadToSerial(QSerialPort& serialPort)
 {
+    if(serialPort.isOpen() && serialPort.isWritable()){
+        MacroConfig data;
+        data.numInputs = this->inputs.size();
+        // We need to keep track of dataPtr to write correct data offsets.
+        int dataPtr = 0;
+        foreach(const Input& input, this->inputs){
+            MacroAction action;
+            action.delay = input.delay;
+            action.size = input.packets.size();
+            action.data = dataPtr;
+            std::memcpy(data.commandBuffer + dataPtr, // Write to command buffer
+                        input.packets.data(), // Read from Qt side's data pointer
+                        sizeof(MacroPacket) * input.packets.size());
+            dataPtr += sizeof(MacroPacket) * input.packets.size();
+        }
+        // TODO: Fill in expander address later
+        int bytesWritten = serialPort.write((const char*)&data);
+        if(!serialPort.waitForBytesWritten(30000)){
+            throw "Connection timeout while writing to port " + serialPort.portName();
+        }
+        if(bytesWritten == -1) {
+            throw "Failed to write to port " + serialPort.portName();
+        }
+        qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
+    }
+    else throw "Port " + serialPort.portName() + " is not open or writable.";
 
 }

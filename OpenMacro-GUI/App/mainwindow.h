@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "./presetdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,6 +17,7 @@ public:
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
+    PresetDialog *presetDialog;
 private slots:
     void Test();
 };

@@ -440,6 +440,7 @@
     <addaction name="actionLoadPreset"/>
     <addaction name="actionSavePresetAuto"/>
     <addaction name="actionSavePreset"/>
+    <addaction name="actionConnectToDevice"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -516,6 +517,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionConnectToDevice">
+   <property name="text">
+    <string>Connect to Device</string>
    </property>
   </action>
  </widget>
