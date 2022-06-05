@@ -197,7 +197,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
             dataPtr += sizeof(MacroPacket) * input.packets.size();
         }
         // TODO: Fill in expander address later
-        int bytesWritten = serialPort.write((const char*)&data);
+        int bytesWritten = serialPort.write((const char*)&data, sizeof(MacroConfig));
 
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
