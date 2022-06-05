@@ -18,29 +18,27 @@ class ConfigMacroForm : public QGroupBox
     QSpinBox* mouseXInput;
     QSpinBox* mouseYInput;
     QSpinBox* mouseScrollInput;
-    QToolButton* inputModeInput;
-    QToolButton* mouseButtonInput;
+    QComboBox* inputModeInput;
+    QComboBox* mouseButtonInput;
     QComboBox *keyInput;
     QComboBox *modifierInput;
-    QMetaEnum keys = QMetaEnum::fromType<InoInterface::KeyboardKeycode>();
-    QMetaEnum modifiers = QMetaEnum::fromType<Qt::KeyboardModifier>();
 public:
     ConfigMacroForm(QWidget* parent);
     void injectDependencies(CommandList* commandList,
                             QSpinBox* mouseXInput,
                             QSpinBox* mouseYInput,
                             QSpinBox* mouseScrollInput,
-                            QToolButton* inputModeInput,
-                            QToolButton* mouseButtonInput,
+                            QComboBox *inputModeInput,
+                            QComboBox *mouseButtonInput,
                             QComboBox* keyInput,
                             QComboBox* modifierInput);
-
-public slots:
-    void onUpdateMacro();
-
+    void updateForm(const MacroPacket& packet);
+    void updateVisibility();
+    void disable();
 private:
     void initKeyInput(QComboBox *keyInput);
     void initModifierInput(QComboBox *modifierInput);
+    void initMouseButtonInput(QComboBox *mouseButtonInput);
 };
 
 #endif // CONFIGMACROFORM_H

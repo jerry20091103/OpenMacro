@@ -19,6 +19,9 @@ public:
     InputList(QWidget *parent = nullptr);
     void injectDependencies(PresetMenu* presetMenu, QPushButton* newAction, QPushButton* deleteAction, CommandList* commandList);
     void updateButtonStates();
+    void onNewPreset(const Preset& preset);
+    void setDirty(bool newDirty);
+    Preset::Input &getCurrentInput();
 public slots:
     void onNewInput();
     void onDeleteSelected();

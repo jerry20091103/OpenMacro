@@ -19,6 +19,20 @@ void InputList::updateButtonStates()
     deleteAction->setEnabled(!presetMenu->activePresetHasMinNumOfInputs() && presetMenu->hasActivePreset());
 }
 
+void InputList::onNewPreset(const Preset &preset)
+{
+    clear();
+    for(int idx = 0; idx < preset.getInputs().size(); ++idx){
+        addItem("Input " + QString::number(idx));
+    }
+    updateButtonStates();
+}
+
+void InputList::setDirty(bool newDirty)
+{
+    this->presetMenu->setDirty(newDirty);
+}
+
 void InputList::onNewInput()
 {
     qDebug() << "onNewInput";
@@ -40,5 +54,14 @@ void InputList::onDeleteSelected()
 void InputList::onSelectChanged()
 {
     qDebug() << "onSelectChanged";
-
+    this->commandList->updateCommandList(
+                this->presetMenu->activePreset
+                    .getInputs()[this->currentRow()]
+                        .packets);
 }
+
+Preset::Input& InputList::getCurrentInput(){
+    return this->presetMenu->activePreset
+                .getInputs()[this->currentRow()];
+}
+

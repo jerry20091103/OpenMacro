@@ -4,19 +4,17 @@
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-const QString Preset::fileExtension = ".omp"; // OMP -> Open Macro Preset
-const char* macroModeName[] = { "button", "pointer" };
-static MacroMode macroNameToMode(QString name){
-    if(name == macroModeName[MacroMode::KEYBOARD_MOUSE_CLICK]) return MacroMode::KEYBOARD_MOUSE_CLICK;
-    if(name == macroModeName[MacroMode::MOUSE_MOVE]) return MacroMode::MOUSE_MOVE;
-    return MacroMode::KEYBOARD_MOUSE_CLICK;
-
-
-}
+const QString Preset::fileExtension = ".json"; // Open Macro Preset (json)
 const char* macroModeField = "mode";
 const char* macroDelayField = "delay";
 const char* macroCommandsField = "commands";
 const char* inputArrayField = "macro_actions";
+const char* mouseButtonField = "button";
+const char* mouseXField = "x";
+const char* mouseYField = "y";
+const char* mouseWheelField = "wheel";
+const char* keyboardButtonField = "button";
+const char* modifierField = "modifier";
 
 static inline void verifyOMPField(const QJsonObject& jsonObject, const char* fieldName, QJsonValue::Type expectedType){
     if(!jsonObject.contains(fieldName))
@@ -25,11 +23,15 @@ static inline void verifyOMPField(const QJsonObject& jsonObject, const char* fie
         throw "Malformed preset file: Field " + QString(fieldName) + " has incorrect type.";
 }
 
-const std::vector<Preset::Input> &Preset::getInputs() const
+std::vector<Preset::Input> &Preset::getInputs()
 {
     return inputs;
 }
 
+const std::vector<Preset::Input> &Preset::getInputs() const
+{
+    return inputs;
+}
 void Preset::addInput()
 {
     inputs.push_back(Input());
@@ -42,8 +44,6 @@ void Preset::popInput()
 
 Preset::Preset()
 {
-    // Default inputs that would make more sense having MOUSE_MOVE as default.
-    inputs[BTN_JOY].mode = inputs[ENC_DEC].mode = inputs[ENC_INC].mode = MacroMode::MOUSE_MOVE;
 }
 
 void Preset::readFrom(QString fileName)
@@ -54,6 +54,7 @@ void Preset::readFrom(QString fileName)
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
         throw "Failed to open file " + Preset::fileExtension;
+
     const QByteArray bytes = file.readAll();
     const QJsonObject jsonObject = QJsonDocument::fromJson(bytes).object();
     // TODO: Read from JSON object into class properties.
@@ -66,12 +67,38 @@ void Preset::readFrom(QString fileName)
         while(idx >= inputs.size()) inputs.push_back(Preset::Input());
         Preset::Input& input = inputs[idx++];
         const QJsonObject& inputObject = val.toObject();
-        verifyOMPField(inputObject, macroModeField, QJsonValue::String);
         verifyOMPField(inputObject, macroDelayField, QJsonValue::Double);
-        verifyOMPField(inputObject, macroCommandsField, QJsonValue::String);
-        input.mode = macroNameToMode(inputObject[macroModeField].toString());
+        verifyOMPField(inputObject, macroCommandsField, QJsonValue::Array);
         input.delay = inputObject[macroDelayField].toInt();
-        input.commands = inputObject[macroCommandsField].toString();
+        input.packets.clear();
+        const QJsonArray& macroCommandsArray = inputObject[macroCommandsField].toArray();
+        int jdx = 0;
+        foreach(const QJsonValue& val, macroCommandsArray){
+            while(jdx >= input.packets.size()) input.packets.push_back(MacroPacket());
+            MacroPacket& packet = input.packets[jdx++];
+            const QJsonObject& commandObject = val.toObject();
+            verifyOMPField(commandObject, macroModeField, QJsonValue::Double);
+            packet.mode = static_cast<MacroMode>(commandObject[macroModeField].toInt(MacroMode::KEYBOARD_MOUSE_CLICK));
+            switch(packet.mode) {
+            case MacroMode::MOUSE_MOVE:
+                verifyOMPField(commandObject, mouseButtonField, QJsonValue::Double);
+                verifyOMPField(commandObject, mouseXField, QJsonValue::Double);
+                verifyOMPField(commandObject, mouseYField, QJsonValue::Double);
+                verifyOMPField(commandObject, mouseWheelField, QJsonValue::Double);
+                packet.mouseMove.mouseBtn = commandObject[mouseButtonField].toInt(MOUSE_LEFT);
+                packet.mouseMove.mouseX = commandObject[mouseXField].toInt(0);
+                packet.mouseMove.mouseY = commandObject[mouseYField].toInt(0);
+                packet.mouseMove.wheel = commandObject[mouseWheelField].toInt(0);
+                break;
+                default:
+                case MacroMode::KEYBOARD_MOUSE_CLICK:
+                verifyOMPField(commandObject, keyboardButtonField, QJsonValue::Double);
+                verifyOMPField(commandObject, modifierField, QJsonValue::Double);
+                packet.keycode = commandObject[keyboardButtonField].toInt(0);
+                packet.modifierCode = commandObject[modifierField].toInt(0);
+                break;
+            }
+        }
     }
     file.close();
 }
@@ -91,10 +118,26 @@ void Preset::saveAs(QString fileName) const
     qDebug() << "Number of inputs " + QString::number(inputs.size());
     foreach(const Preset::Input& input, inputs){
         QJsonObject inputObject;
-        const char* modeName = macroModeName[input.mode];
-        inputObject[macroModeField] = modeName;
         inputObject[macroDelayField] = input.delay;
-        inputObject[macroCommandsField] = input.commands;
+        QJsonArray macroCommandsArray = QJsonArray();
+        foreach(const MacroPacket& packet, input.packets){
+            QJsonObject commandObject;
+            commandObject[macroModeField] = packet.mode;
+            switch(packet.mode){
+                case MacroMode::MOUSE_MOVE:
+                commandObject[mouseButtonField] = packet.mouseMove.mouseBtn;
+                commandObject[mouseXField] = packet.mouseMove.mouseX;
+                commandObject[mouseYField] = packet.mouseMove.mouseY;
+                commandObject[mouseWheelField] = packet.mouseMove.wheel;
+                default:
+                case MacroMode::KEYBOARD_MOUSE_CLICK:
+                commandObject[keyboardButtonField] = packet.keycode;
+                commandObject[modifierField] = packet.modifierCode;
+                break;
+            }
+            macroCommandsArray.push_back(commandObject);
+        }
+        inputObject[macroCommandsField] = macroCommandsArray;
         inputArray.append(inputObject);
     }
     jsonObject[inputArrayField] = inputArray;

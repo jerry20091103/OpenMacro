@@ -14,20 +14,19 @@ class PresetMenu : public QMenu
     Q_OBJECT
 private:
     QString activeFileName = "";
-    Preset activePreset;
     QLabel* fileNameLabel;
     QAction* saveAction;
     QAction* saveAutoAction;
     InputList* inputList;
     bool dirty;
 public:
+    Preset activePreset;
     PresetMenu(QMenuBar*);
     void injectDependencies(QLabel* fileNameLabel, QAction* saveAction, QAction* saveAutoAction, InputList* inputList);
     bool hasActivePreset() const;
     bool activePresetHasMaxNumOfInputs() const;
     bool activePresetHasMinNumOfInputs() const;
     void updateFileNameLabel() const;
-    void updateListItems();
     void addNewInput();
     void removeInputSlot();
     void savePreset(bool askForPath);

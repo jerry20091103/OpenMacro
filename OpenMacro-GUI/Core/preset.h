@@ -7,11 +7,12 @@
 ///
 class Preset
 {
+public:
     struct Input {
-        MacroMode mode = MacroMode::KEYBOARD_MOUSE_CLICK;
         uint8_t delay = 1;
-        QString commands = "";
+        std::vector<MacroPacket> packets;
     };
+private:
     MacroPassword passwords[MAX_PASSWORDS];
     std::vector<Input> inputs = std::vector<Input>(NUM_BTN_INPUTS);
 public:
@@ -27,6 +28,7 @@ public:
 
     /// The file extension used for macro preset files.
     static const QString fileExtension;
+    std::vector<Input> &getInputs();
     const std::vector<Input> &getInputs() const;
     void addInput();
     void popInput();

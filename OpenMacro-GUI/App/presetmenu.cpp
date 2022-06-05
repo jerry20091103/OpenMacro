@@ -1,6 +1,5 @@
 #include "presetmenu.h"
 #include <QFileDialog>
-
 static const char* noFileSelectedText = "No file selected. Go to Presets > Create New Preset to start.";
 static const char* fileSelectedText = "Current file: ";
 
@@ -30,6 +29,7 @@ void PresetMenu::injectDependencies(QLabel* fileNameLabel, QAction* saveAction, 
     this->inputList = inputList;
     saveAction->setDisabled(true);
     setDirty(false);
+
 }
 
 bool PresetMenu::hasActivePreset() const { return !activeFileName.isEmpty(); }
@@ -51,15 +51,6 @@ void PresetMenu::updateFileNameLabel() const
     else if(dirty) fileNameLabel->setText(fileSelectedText + activeFileName + " (*)");
     else fileNameLabel->setText(fileSelectedText + activeFileName);
 
-}
-
-void PresetMenu::updateListItems()
-{
-    inputList->clear();
-    for(int idx = 0; idx < activePreset.getInputs().size(); ++idx){
-        inputList->addItem("Input " + QString::number(idx));
-    }
-    inputList->updateButtonStates();
 }
 
 void PresetMenu::addNewInput()
@@ -109,7 +100,7 @@ void PresetMenu::onCreateNewPreset()
         // Reset to get a new Preset
         activePreset = Preset();
         activePreset.saveAs(activeFileName); // Save on create.
-        updateListItems();
+        this->inputList->onNewPreset(activePreset);
     );
 }
 
@@ -128,7 +119,7 @@ void PresetMenu::onLoadPreset()
         activeFileName = fileName;
         saveAction->setEnabled(true);
         setDirty(false);
-        updateListItems();
+        this->inputList->onNewPreset(activePreset);
     );
 }
 
