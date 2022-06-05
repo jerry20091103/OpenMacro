@@ -81,10 +81,21 @@ void PresetDialog::setStatus(const QString &text)
 
 void PresetDialog::refreshPortList()
 {
+    auto availablePorts = QSerialPortInfo::availablePorts();
+    // Check if port list has changed. If not, do not refresh list.
+    bool isDifferent = false;
+    foreach(const QSerialPortInfo& port, availablePorts){
+        if(availablePortNames.find(port.portName()) == availablePortNames.end()) {
+            isDifferent = true;
+        }
+    }
+    if(!isDifferent) return;
+    availablePortNames.clear();
     ui->portList->clear();
-    qDebug() << "Number of available ports: " << QSerialPortInfo::availablePorts().size();
-    foreach(const QSerialPortInfo& port, QSerialPortInfo::availablePorts()){
+    qDebug() << "Number of available ports: " << availablePorts.size();
+    foreach(const QSerialPortInfo& port, availablePorts){
         ui->portList->addItem(port.portName());
+        availablePortNames.insert(port.portName());
     }
 }
 

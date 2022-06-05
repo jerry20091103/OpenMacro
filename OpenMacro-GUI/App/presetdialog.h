@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QSerialPort>
+#include <unordered_set>
 #include "App/presetmenu.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +28,7 @@ private:
     void refreshState();
     Ui::PresetDialog *ui;
     int timerId = -1;
+    std::unordered_set<QString> availablePortNames;
 };
 
 #endif // PRESETDIALOG_H
