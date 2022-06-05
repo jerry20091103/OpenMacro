@@ -23,8 +23,9 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
     // [Select port list callback]
     connect(ui->portList, &QComboBox::currentIndexChanged, this, [&](int index){
-        if(ui->portList->count() == 0) return;
-        if(serialPort.isOpen()) serialPort.close();
+        if(ui->portList->count() == 0) {
+            return;
+        }
         const QString& portName = ui->portList->currentText();
         serialPort.setPortName(portName);
         refreshState();
@@ -52,7 +53,7 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
 
 PresetDialog::~PresetDialog()
 {
-    if(serialPort.isOpen()) serialPort.close();
+//    if(serialPort.isOpen()) serialPort.close();
 }
 
 void PresetDialog::showEvent(QShowEvent *event)
@@ -67,7 +68,7 @@ void PresetDialog::closeEvent(QCloseEvent *event)
 {
     qDebug() << "Close event";
     QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
-    if(serialPort.isOpen()) serialPort.close();
+//    if(serialPort.isOpen()) serialPort.close();
 }
 
 void PresetDialog::timerEvent(QTimerEvent *event)
@@ -104,14 +105,16 @@ void PresetDialog::refreshPortList()
 
 void PresetDialog::refreshState()
 {
-    if(serialPort.isOpen()){
-        setStatus("Connected to port " + serialPort.portName());
+    if(ui->portList->count() > 0){
+        setStatus("Port ready");
         ui->uploadButton->setEnabled(true);
         ui->downloadButton->setEnabled(true);
+        ui->portList->setEnabled(true);
     }
     else {
-        setStatus("Disconnected");
+        setStatus("No port available");
         ui->uploadButton->setEnabled(false);
         ui->downloadButton->setEnabled(false);
+        ui->portList->setEnabled(false);
     }
 }
