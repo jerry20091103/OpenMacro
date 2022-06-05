@@ -14,34 +14,37 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
 {
     ui->setupUi(this);
     this->setWindowTitle("Connect to Device");
+    serialPort.setBaudRate(QSerialPort::Baud9600);
+    serialPort.setDataBits(QSerialPort::Data8);
+    serialPort.setParity(QSerialPort::NoParity);
+    serialPort.setStopBits(QSerialPort::OneStop);
+    serialPort.setFlowControl(QSerialPort::NoFlowControl);
+    auto openMode = QIODeviceBase::OpenMode();
+    openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
     // [Select port list callback]
     connect(ui->portList, &QComboBox::currentIndexChanged, this, [&](int index){
         if(ui->portList->count() == 0) return;
         if(serialPort.isOpen()) serialPort.close();
         const QString& portName = ui->portList->currentText();
-        auto openMode = QIODeviceBase::OpenMode();
-        openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
         serialPort.setPortName(portName);
-        serialPort.open(openMode);
-        serialPort.setBaudRate(QSerialPort::Baud9600);
-        serialPort.setDataBits(QSerialPort::Data8);
-        serialPort.setParity(QSerialPort::NoParity);
-        serialPort.setStopBits(QSerialPort::OneStop);
-        serialPort.setFlowControl(QSerialPort::NoFlowControl);
         refreshState();
     });
     // [Upload button callback]
     connect(ui->uploadButton, &QPushButton::clicked, this, [&](bool checked){
         qDebug() << "Upload";
         EXCEPT_ALERT(
+            serialPort.open(openMode);
             this->presetMenu->uploadPreset(serialPort);
+            serialPort.close();
         );
     });
     // [Download button callback]
     connect(ui->downloadButton, &QPushButton::clicked, this, [&](bool checked){
         qDebug() << "Download";
         EXCEPT_ALERT(
+            serialPort.open(openMode);
             this->presetMenu->downloadPreset(serialPort);
+            serialPort.close();
         );
     });
 
