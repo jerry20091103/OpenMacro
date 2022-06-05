@@ -19,8 +19,6 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     serialPort.setParity(QSerialPort::NoParity);
     serialPort.setStopBits(QSerialPort::OneStop);
     serialPort.setFlowControl(QSerialPort::NoFlowControl);
-    auto openMode = QIODeviceBase::OpenMode();
-    openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
     // [Select port list callback]
     connect(ui->portList, &QComboBox::currentIndexChanged, this, [&](int index){
         if(ui->portList->count() == 0) {
@@ -34,6 +32,8 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     connect(ui->uploadButton, &QPushButton::clicked, this, [&](bool checked){
         qDebug() << "Upload";
         EXCEPT_ALERT(
+            auto openMode = QIODeviceBase::OpenMode();
+            openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
             serialPort.open(openMode);
             this->presetMenu->uploadPreset(serialPort);
             serialPort.close();
@@ -43,6 +43,8 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     connect(ui->downloadButton, &QPushButton::clicked, this, [&](bool checked){
         qDebug() << "Download";
         EXCEPT_ALERT(
+            auto openMode = QIODeviceBase::OpenMode();
+            openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
             serialPort.open(openMode);
             this->presetMenu->downloadPreset(serialPort);
             serialPort.close();
