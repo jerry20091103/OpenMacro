@@ -155,10 +155,12 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
 {
     if(serialPort.isOpen()){
         MacroConfig data;
-        serialPort.read((char*)&data, sizeof(MacroConfig));
+        int bytesRead = serialPort.read((char*)&data, sizeof(MacroConfig));
         if(!serialPort.waitForReadyRead(30000)){
+            qDebug() << "Bytes read:" << bytesRead;
             throw "Error: " + serialPort.errorString();
         }
+        qDebug() << "Bytes read:" << bytesRead;
         // Clear any existing inputs to prevent accidents.
         inputs.clear();
         for(int idx = 0; idx < data.numInputs; ++idx){
@@ -202,11 +204,12 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
         }
-
         if(!serialPort.waitForBytesWritten(30000)){
+            qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
             throw "Error: " + serialPort.errorString();
         }
         qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
+
     }
     else throw "Port " + serialPort.portName() + " is not open or writable.";
 
