@@ -19,16 +19,6 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     serialPort.setParity(QSerialPort::NoParity);
     serialPort.setStopBits(QSerialPort::OneStop);
     serialPort.setFlowControl(QSerialPort::NoFlowControl);
-    // [Serial port bytes written callback]
-    connect(&serialPort, &QSerialPort::bytesWritten, this, [&](int bytesWritten){
-        qDebug() << "Bytes written:" << bytesWritten;
-        serialPort.close();
-    });
-    // [Serial port ready read callback]
-    connect(&serialPort, &QSerialPort::readyRead, this, [&](){
-        qDebug() << "Ready read";
-        serialPort.close();
-    });
     // [Select port list callback]
     connect(ui->portList, &QComboBox::currentIndexChanged, this, [&](int index){
         if(ui->portList->count() == 0) {
@@ -46,6 +36,7 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
             openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
             serialPort.open(openMode);
             this->presetMenu->uploadPreset(serialPort);
+            serialPort.close();
         );
     });
     // [Download button callback]
@@ -56,6 +47,7 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
             openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
             serialPort.open(openMode);
             this->presetMenu->downloadPreset(serialPort);
+            serialPort.close();
         );
     });
 
