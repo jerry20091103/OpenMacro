@@ -199,7 +199,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
             dataPtr += sizeof(MacroPacket) * input.packets.size();
         }
         // TODO: Fill in expander address later
-        int bytesWritten = serialPort.write(QByteArray::fromRawData((const char*)&data, sizeof(MacroConfig)), sizeof(MacroConfig));
+        int bytesWritten = serialPort.write(std::string((const char*)&data, sizeof(MacroConfig)).c_str());
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
         }
