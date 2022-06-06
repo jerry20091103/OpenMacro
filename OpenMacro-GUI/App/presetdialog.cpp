@@ -44,13 +44,8 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
         EXCEPT_ALERT(
             auto openMode = QIODeviceBase::OpenMode();
             openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
-            if(timerId >= 0)
-                QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
-            timerId = -1;
             serialPort.open(openMode);
             this->presetMenu->uploadPreset(serialPort);
-            timerId = QCoreApplication::instance()->eventDispatcher()->registerTimer(1000, Qt::TimerType::CoarseTimer, this);
-
         );
     });
     // [Download button callback]
@@ -59,12 +54,8 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
         EXCEPT_ALERT(
             auto openMode = QIODeviceBase::OpenMode();
             openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
-            if(timerId >= 0)
-                QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
-            timerId = -1;
             serialPort.open(openMode);
             this->presetMenu->downloadPreset(serialPort);
-            timerId = QCoreApplication::instance()->eventDispatcher()->registerTimer(1000, Qt::TimerType::CoarseTimer, this);
         );
     });
 
@@ -86,9 +77,7 @@ void PresetDialog::showEvent(QShowEvent *event)
 void PresetDialog::closeEvent(QCloseEvent *event)
 {
     qDebug() << "Close event";
-    if(timerId >= 0)
-        QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
-    timerId = -1;
+    QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
 //    if(serialPort.isOpen()) serialPort.close();
 }
 
