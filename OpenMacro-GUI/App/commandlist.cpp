@@ -33,10 +33,10 @@ void CommandList::updateCommandList(const std::vector<MacroPacket>& commands)
     }
     this->actionNewCommand->setEnabled(true);
     this->actionDeleteSelectedCommand->setEnabled(idx != 0);
-    this->delayInput->setValue(this->inputList->getCurrentInput().delay);
     this->delayInput->setEnabled(true);
     this->delayInput->setMinimum(0);
     this->delayInput->setMaximum(255);
+    this->delayInput->setValue(this->inputList->getCurrentInput().delay);
 }
 
 void CommandList::setDirty(bool newDirty)
