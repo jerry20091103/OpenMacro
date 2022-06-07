@@ -71,7 +71,7 @@ void Preset::readFrom(QString fileName)
         const QJsonObject& inputObject = val.toObject();
         verifyOMPField(inputObject, macroDelayField, QJsonValue::Double);
         verifyOMPField(inputObject, macroCommandsField, QJsonValue::Array);
-        input.delay = inputObject[macroDelayField].toInt();
+        input.delay = static_cast<uint8_t>(inputObject[macroDelayField].toInt());
         input.packets.clear();
         const QJsonArray& macroCommandsArray = inputObject[macroCommandsField].toArray();
         int jdx = 0;
@@ -120,7 +120,7 @@ void Preset::saveAs(QString fileName) const
     qDebug() << "Number of inputs " + QString::number(inputs.size());
     foreach(const Preset::Input& input, inputs){
         QJsonObject inputObject;
-        inputObject[macroDelayField] = input.delay;
+        inputObject[macroDelayField] = (int)input.delay;
         QJsonArray macroCommandsArray = QJsonArray();
         foreach(const MacroPacket& packet, input.packets){
             QJsonObject commandObject;

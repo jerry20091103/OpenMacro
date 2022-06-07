@@ -24,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
                 ui->inputList,
                 ui->configMacroForm,
                 ui->actionNewCommand,
-                ui->actionDeleteSelectedCommand);
+                ui->actionDeleteSelectedCommand,
+                ui->delayInput);
     ui->configMacroForm->injectDependencies(
                 ui->commandList,
                 ui->mouseXInput,
