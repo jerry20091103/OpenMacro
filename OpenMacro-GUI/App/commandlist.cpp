@@ -8,7 +8,7 @@ CommandList::CommandList(QWidget *parent) : QListWidget(parent)
     });
 }
 
-void CommandList::injectDependencies(InputList *inputList, ConfigMacroForm *configMacroForm, QWidget *actionNewCommand, QWidget *actionDeleteSelectedCommand)
+void CommandList::injectDependencies(InputList *inputList, ConfigMacroForm *configMacroForm, QWidget *actionNewCommand, QWidget *actionDeleteSelectedCommand, QSpinBox *delayInput)
 {
     this->inputList = inputList;
     this->configMacroForm = configMacroForm;
@@ -16,6 +16,12 @@ void CommandList::injectDependencies(InputList *inputList, ConfigMacroForm *conf
     this->actionDeleteSelectedCommand = actionDeleteSelectedCommand;
     this->actionNewCommand->setEnabled(false);
     this->actionDeleteSelectedCommand->setEnabled(false);
+    this->delayInput = delayInput;
+    connect(delayInput, &QSpinBox::valueChanged, this, [&](int value) {
+        setDirty(this->inputList->getCurrentInput().delay != value);
+        this->inputList->getCurrentInput().delay = value;
+    });
+    this->delayInput->setEnabled(false);
 }
 
 void CommandList::updateCommandList(const std::vector<MacroPacket>& commands)
@@ -27,6 +33,10 @@ void CommandList::updateCommandList(const std::vector<MacroPacket>& commands)
     }
     this->actionNewCommand->setEnabled(true);
     this->actionDeleteSelectedCommand->setEnabled(idx != 0);
+    this->delayInput->setEnabled(true);
+    this->delayInput->setMinimum(0);
+    this->delayInput->setMaximum(255);
+    this->delayInput->setValue(this->inputList->getCurrentInput().delay);
 }
 
 void CommandList::setDirty(bool newDirty)

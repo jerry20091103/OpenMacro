@@ -71,7 +71,7 @@ void Preset::readFrom(QString fileName)
         const QJsonObject& inputObject = val.toObject();
         verifyOMPField(inputObject, macroDelayField, QJsonValue::Double);
         verifyOMPField(inputObject, macroCommandsField, QJsonValue::Array);
-        input.delay = inputObject[macroDelayField].toInt();
+        input.delay = static_cast<uint8_t>(inputObject[macroDelayField].toInt());
         input.packets.clear();
         const QJsonArray& macroCommandsArray = inputObject[macroCommandsField].toArray();
         int jdx = 0;
@@ -87,17 +87,17 @@ void Preset::readFrom(QString fileName)
                 verifyOMPField(commandObject, mouseXField, QJsonValue::Double);
                 verifyOMPField(commandObject, mouseYField, QJsonValue::Double);
                 verifyOMPField(commandObject, mouseWheelField, QJsonValue::Double);
-                packet.mouseMove.mouseBtn = commandObject[mouseButtonField].toInt(MOUSE_LEFT);
-                packet.mouseMove.mouseX = commandObject[mouseXField].toInt(0);
-                packet.mouseMove.mouseY = commandObject[mouseYField].toInt(0);
-                packet.mouseMove.wheel = commandObject[mouseWheelField].toInt(0);
+                packet.mouseMove.mouseBtn = static_cast<uint8_t>(commandObject[mouseButtonField].toInt(MOUSE_LEFT));
+                packet.mouseMove.mouseX = static_cast<int16_t>(commandObject[mouseXField].toInt(0));
+                packet.mouseMove.mouseY = static_cast<int16_t>(commandObject[mouseYField].toInt(0));
+                packet.mouseMove.wheel = static_cast<int16_t>(commandObject[mouseWheelField].toInt(0));
                 break;
                 default:
                 case MacroMode::KEYBOARD_MOUSE_CLICK:
                 verifyOMPField(commandObject, keyboardButtonField, QJsonValue::Double);
                 verifyOMPField(commandObject, modifierField, QJsonValue::Double);
-                packet.keycode = commandObject[keyboardButtonField].toInt(0);
-                packet.modifierCode = commandObject[modifierField].toInt(0);
+                packet.keycode = static_cast<uint8_t>(commandObject[keyboardButtonField].toInt(0));
+                packet.modifierCode = static_cast<uint8_t>(commandObject[modifierField].toInt(0));
                 break;
             }
         }
@@ -120,7 +120,7 @@ void Preset::saveAs(QString fileName) const
     qDebug() << "Number of inputs " + QString::number(inputs.size());
     foreach(const Preset::Input& input, inputs){
         QJsonObject inputObject;
-        inputObject[macroDelayField] = input.delay;
+        inputObject[macroDelayField] = (int)input.delay;
         QJsonArray macroCommandsArray = QJsonArray();
         foreach(const MacroPacket& packet, input.packets){
             QJsonObject commandObject;
