@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Hardware.h"
+#include "Macros.h"
 
 /*
     *Libraries used:
@@ -33,18 +34,21 @@ void readRfid()
 
 void receiveSerial()
 {
-    if(Serial && Serial.available())
+    if (Serial && Serial.available())
     {
-        String temp;
-        temp = Serial.readString();
         u8x8.setCursor(0, 0);
-        u8x8.print(temp);
+        u8x8.print("Receiving      ");
+        int16_t bytes;
+
+        bytes = macros.readFromSerial();
+        u8x8.setCursor(0, 0);
+        u8x8.print("Received " + String(bytes));
     }
 }
 
 void readAnalog()
 {
-    u8x8.setFont(u8x8_font_7x14_1x2_n );
+    u8x8.setFont(u8x8_font_7x14_1x2_n);
     u8x8.setCursor(0, 38);
     u8x8.print("             "); // overwrite old numbers
     u8x8.setCursor(0, 38);
@@ -54,19 +58,15 @@ void readAnalog()
 
 void setup()
 {
-    Serial.begin(9600);
-
-    //! debug: wait for serial monitor
-    while (!Serial)
-        ;
 
     HardwareSetup();
 
     taskManager.scheduleFixedRate(100, readRfid);
-    taskManager.scheduleFixedRate(10, receiveSerial);
+    taskManager.scheduleFixedRate(10, receiveSerial, TIME_MICROS);
     taskManager.scheduleFixedRate(100, readAnalog);
 
-    Serial.println("Setup Complete");
+    Serial.begin(9600);
+    delay(1000);
 }
 
 void loop()

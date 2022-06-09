@@ -3,9 +3,11 @@
 
 Macros macros;
 
-bool Macros::readFromSerial()
+int16_t Macros::readFromSerial()
 {
-    Serial.readBytes((uint8_t *)&config, sizeof(config));
+    int16_t read = 0;
+    read += Serial.readBytes((uint8_t *)&config, sizeof(MacroConfig));
+    return read;
 }
 
 bool Macros::sendToSerial()
@@ -52,7 +54,7 @@ void Macros::runMacro(uint8_t input)
     uint16_t delay = config.inputs[input].delay;
     for (uint8_t i = 0; i < config.inputs[input].size; i++)
     {
-        MacroPacket *packet = (MacroPacket *)&config.commamdBuffer[config.inputs[input].data];
+        MacroPacket *packet = (MacroPacket *)&config.commandBuffer[config.inputs[input].data];
 
         // press modifiers
         Keyboard.press(packet->modifierCode);

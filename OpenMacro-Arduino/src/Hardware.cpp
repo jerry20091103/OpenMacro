@@ -61,8 +61,8 @@ void HardwareSetup()
     //* setup RFID
     SPI.begin();
     rfid.PCD_Init(RFID_SS, RFID_RST);
-    Serial.print("RFID reader :");
-    rfid.PCD_DumpVersionToSerial();
+    //Serial.print("RFID reader :");
+    //rfid.PCD_DumpVersionToSerial();
     Serial.println();
 
     //*  start keyboard library

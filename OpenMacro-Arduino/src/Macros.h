@@ -9,7 +9,7 @@ class Macros
 private:
     MacroConfig config;
 public:
-    bool readFromSerial();
+    int16_t readFromSerial();
     bool sendToSerial();
     void saveToEEPROM();
     void readFromEEPROM();

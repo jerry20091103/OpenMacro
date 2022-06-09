@@ -204,7 +204,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
         }
-        if(!serialPort.waitForBytesWritten(30000)){
+        if(!serialPort.waitForBytesWritten(5000)){
             qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
             throw "Error: " + serialPort.errorString();
         }

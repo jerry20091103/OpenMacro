@@ -3,7 +3,6 @@
 
 void BtnPressCallback(pinid_t pin, bool isHeld)
 {
-    macros.runMacro(getInputPinNum(pin));
     // we put serial here for testing
     Serial.println("Button Press: " + String(pin) + " isHeld: " + String(isHeld));
 
@@ -19,6 +18,8 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
         Serial.println("EMERGENCY STOP");
         while (true) {}
     }
+
+    macros.runMacro(getInputPinNum(pin));
 }
 
 void BtnReleaseCallback(pinid_t pin, bool isHeld)
@@ -33,7 +34,12 @@ void BtnReleaseCallback(pinid_t pin, bool isHeld)
 
 void EncCallback(int value)
 {
-    if(value > 0)
+    Serial.println("Encoder value: " + String(value));
+
+    u8x8.setCursor(0, 0);
+    u8x8.println("Encoder: " + String(value) + "    ");
+
+     if(value > 0)
     {
         macros.runMacro(ENC_INC);
     }
@@ -41,11 +47,6 @@ void EncCallback(int value)
     {
         macros.runMacro(ENC_DEC);
     }
-    
-    Serial.println("Encoder value: " + String(value));
-
-    u8x8.setCursor(0, 0);
-    u8x8.println("Encoder: " + String(value) + "    ");
 }
 
 // convert pin number to input number

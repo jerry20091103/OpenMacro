@@ -1,6 +1,6 @@
 #include "debugmenu.h"
 
-const char* debugPortName = "COM12";
+const char* debugPortName = "COM17";
 
 DebugMenu::DebugMenu(QWidget* parent) : QMenu(parent)
 {
