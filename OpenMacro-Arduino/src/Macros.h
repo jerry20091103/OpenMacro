@@ -7,7 +7,7 @@
 class Macros
 {
 private:
-    MacroConfig config;
+    Config config;
     void setupMacros();
 public:
     int16_t readFromSerial();

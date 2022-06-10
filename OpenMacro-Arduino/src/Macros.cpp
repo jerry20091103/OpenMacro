@@ -6,7 +6,7 @@ Macros macros;
 int16_t Macros::readFromSerial()
 {
     int16_t read = 0;
-    read += Serial.readBytes((uint8_t *)&config, sizeof(MacroConfig));
+    read += Serial.readBytes((uint8_t *)&config, sizeof(Config));
     return read;
 }
 
@@ -36,20 +36,20 @@ void Macros::setupMacros()
 {
     // add two expanders
     // ! need to test hotswapping expanded pins
-    if (config.expanderAddr[0] != 0x00)
+    if (config.macroConfig.expanderAddr[0] != 0x00)
     {
     }
 }
 
 void Macros::runMacro(uint8_t input)
 {
-    if (input >= config.numInputs)
+    if (input >= config.macroConfig.numInputs)
         return;
 
-    uint16_t delay = config.inputs[input].delay;
-    for (uint8_t i = 0; i < config.inputs[input].size; i++)
+    uint16_t delay = config.macroConfig.inputs[input].delay;
+    for (uint8_t i = 0; i < config.macroConfig.inputs[input].size; i++)
     {
-        MacroPacket *packet = (MacroPacket *)&config.commandBuffer[config.inputs[input].data + sizeof(MacroPacket) * i];
+        MacroPacket *packet = (MacroPacket *)&config.macroConfig.commandBuffer[config.macroConfig.inputs[input].data + sizeof(MacroPacket) * i];
 
         // press modifiers
         Keyboard.press((KeyboardKeycode)packet->modifierCode);
@@ -93,18 +93,18 @@ void Macros::dumpConfig()
     Serial.print("expanderAddr: ");
     for (int i = 0; i < MAX_EXPANDERS; i++)
     {
-        Serial.print(config.expanderAddr[i], HEX);
+        Serial.print(config.macroConfig.expanderAddr[i], HEX);
         Serial.print(" ");
     }
     Serial.print("\nnumInputs: ");
-    Serial.print(config.numInputs);
+    Serial.print(config.macroConfig.numInputs);
     Serial.println("\ninputs:");
-    for (int i = 0; i < config.numInputs; i++)
+    for (int i = 0; i < config.macroConfig.numInputs; i++)
     {
-        Serial.print(String(i) + " size: " + String(config.inputs[i].size) + "\tdelay: " + String(config.inputs[i].delay) + "\tdata: " + String(config.inputs[i].data) + "\n");
-        for (uint8_t j = 0; j < config.inputs[i].size; j++)
+        Serial.print(String(i) + " size: " + String(config.macroConfig.inputs[i].size) + "\tdelay: " + String(config.macroConfig.inputs[i].delay) + "\tdata: " + String(config.macroConfig.inputs[i].data) + "\n");
+        for (uint8_t j = 0; j < config.macroConfig.inputs[i].size; j++)
         {
-            MacroPacket *packet = (MacroPacket *)&config.commandBuffer[config.inputs[i].data + sizeof(MacroPacket) * j];
+            MacroPacket *packet = (MacroPacket *)&config.macroConfig.commandBuffer[config.macroConfig.inputs[i].data + sizeof(MacroPacket) * j];
             Serial.print("\tcmd" + String(j) + " mode: " + String(packet->mode) + "\tmod: " + String(packet->modifierCode));
             if (packet->mode == KEYBOARD_MOUSE_CLICK)
             {

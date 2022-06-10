@@ -41,7 +41,7 @@ void receiveSerial()
         int16_t bytes;
 
         bytes = macros.readFromSerial();
-        if(bytes == sizeof(MacroConfig))
+        if(bytes == sizeof(Config))
         {
             macros.saveToEEPROM();
             u8x8.setCursor(0, 0);

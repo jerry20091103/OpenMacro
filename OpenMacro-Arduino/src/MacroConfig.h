@@ -98,5 +98,16 @@ struct PasswordConfig
     MacroPassword passwords[MAX_PASSWORDS];
 };
 
+struct Config
+{
+    uint8_t isPassword;
+    // 0 -> macro, other -> password
+    union 
+    {
+        MacroConfig macroConfig;
+        PasswordConfig passwordConfig;
+    };
+    
+};
 
 #endif
