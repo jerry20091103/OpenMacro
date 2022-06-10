@@ -100,8 +100,8 @@ void ConfigMacroForm::updateForm(const MacroPacket &packet)
         break;
         default:
         case KEYBOARD_MOUSE_CLICK:
-        this->keyInput->setCurrentIndex(packet.keycode);
-        this->modifierInput->setCurrentIndex((packet.modifierCode));
+        this->keyInput->setCurrentIndex(this->keyInput->findText(keys.valueToKey(packet.keycode)));
+        this->modifierInput->setCurrentIndex(this->modifierInput->findText(keys.valueToKey(packet.modifierCode)));
         break;
     }
 }
