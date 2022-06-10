@@ -6,7 +6,7 @@ Macros macros;
 int16_t Macros::readFromSerial()
 {
     int16_t read = 0;
-    read += Serial.readBytes((uint8_t *)&config, sizeof(Config));
+    read += Serial.readBytes((uint8_t *)&config.macroConfig, sizeof(MacroConfig));
     return read;
 }
 
@@ -43,6 +43,7 @@ void Macros::setupMacros()
 
 void Macros::runMacro(uint8_t input)
 {
+    runningMacro = true;
     if (input >= config.macroConfig.numInputs)
         return;
 
@@ -74,11 +75,13 @@ void Macros::runMacro(uint8_t input)
 
         // release modifier
         Keyboard.release((KeyboardKeycode)packet->modifierCode);
-
-        // if (delay > 0)
-        //     taskManager.yieldForMicros(1000 * delay);
-        
+        Keyboard.flush();
+        if (delay > 0 && i != config.macroConfig.inputs[input].size-1)
+        {
+            taskManager.yieldForMicros(1000000 * delay);
+        }
     }
+    runningMacro = false;
 }
 
 void Macros::clearConfig()
@@ -91,7 +94,7 @@ void Macros::dumpConfig()
 {
     Serial.println("Dumping Config");
     Serial.print("expanderAddr: ");
-    for (int i = 0; i < MAX_EXPANDERS; i++)
+    for (uint8_t i = 0; i < MAX_EXPANDERS; i++)
     {
         Serial.print(config.macroConfig.expanderAddr[i], HEX);
         Serial.print(" ");
@@ -99,7 +102,7 @@ void Macros::dumpConfig()
     Serial.print("\nnumInputs: ");
     Serial.print(config.macroConfig.numInputs);
     Serial.println("\ninputs:");
-    for (int i = 0; i < config.macroConfig.numInputs; i++)
+    for (uint8_t i = 0; i < config.macroConfig.numInputs; i++)
     {
         Serial.print(String(i) + " size: " + String(config.macroConfig.inputs[i].size) + "\tdelay: " + String(config.macroConfig.inputs[i].delay) + "\tdata: " + String(config.macroConfig.inputs[i].data) + "\n");
         for (uint8_t j = 0; j < config.macroConfig.inputs[i].size; j++)

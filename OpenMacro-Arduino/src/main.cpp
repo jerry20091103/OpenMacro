@@ -14,14 +14,12 @@ void readRfid()
 {
     if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial())
     {
-        Serial.println("RFID tag read:");
-        Serial.print("UID: ");
+        Serial.print("RFID:");
 
         u8x8.setCursor(0, 0);
-        u8x8.print("RFID:        ");
-        u8x8.setCursor(0, 18);
+        u8x8.print("RFID:");
 
-        for (int i = 0; i < rfid.uid.size; i++)
+        for (uint8_t i = 0; i < rfid.uid.size; i++)
         {
             Serial.print(rfid.uid.uidByte[i], HEX);
             Serial.print(" ");
@@ -36,23 +34,24 @@ void receiveSerial()
 {
     if (Serial && Serial.available())
     {
+        u8x8.clear();
         u8x8.setCursor(0, 0);
-        u8x8.print("Receiving      ");
+        u8x8.print("RECEIVING");
         int16_t bytes;
 
         bytes = macros.readFromSerial();
-        if(bytes == sizeof(Config))
+        if (bytes == sizeof(MacroConfig))
         {
             macros.saveToEEPROM();
             u8x8.setCursor(0, 0);
-            u8x8.print("Macro Received  ");
+            u8x8.print("MACRO RECEIVED");
         }
         else
         {
             u8x8.setCursor(0, 0);
-            u8x8.print("Receive ERROR " + String(bytes));
+            u8x8.print("ERROR" + String(bytes));
             // roll back contents from eeprom
-            if(!macros.readFromEEPROM())
+            if (!macros.readFromEEPROM())
             {
                 macros.clearConfig();
             }
@@ -62,29 +61,34 @@ void receiveSerial()
 
 void readAnalog()
 {
-    u8x8.setFont(u8x8_font_7x14_1x2_n);
-    u8x8.setCursor(0, 38);
-    u8x8.print("             "); // overwrite old numbers
-    u8x8.setCursor(0, 38);
-    u8x8.print(String(analogRead(JOY_X)) + " " + String(analogRead(JOY_Y)));
-    u8x8.setFont(u8x8_font_8x13_1x2_r);
+    if (!macros.runningMacro)
+    {
+        // u8x8.setCursor(0, 38);
+        // u8x8.print("             "); // overwrite old numbers
+        // u8x8.setCursor(0, 38);
+        // u8x8.print(String(analogRead(JOY_X)) + " " + String(analogRead(JOY_Y)));
+    }
 }
 
 void setup()
 {
-
+    Serial.begin(9600);
     HardwareSetup();
 
     taskManager.scheduleFixedRate(100, readRfid);
     taskManager.scheduleFixedRate(10, receiveSerial, TIME_MICROS);
     taskManager.scheduleFixedRate(100, readAnalog);
 
-    if(!macros.readFromEEPROM())
+    if (!macros.readFromEEPROM())
     {
         u8x8.setCursor(0, 0);
-        u8x8.print("No Macro Config");
+        u8x8.print("NO MACRO CONFIG");
     }
-    Serial.begin(9600);
+    else
+    {
+        u8x8.setCursor(0, 0);
+        u8x8.print("WELCOME");
+    }
 }
 
 void loop()

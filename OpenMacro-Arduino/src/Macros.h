@@ -16,9 +16,9 @@ public:
     bool readFromEEPROM();
     void clearConfig();
     void dumpConfig();
-
-
     void runMacro(uint8_t input);
+
+    bool runningMacro = false;
 };
 
 extern Macros macros;

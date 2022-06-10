@@ -7,6 +7,7 @@
 #include "u8g2lib.h"
 #include "HID-Project.h"
 #include <EEPROM.h>
+#include <Wire.h>
 
 // *Pins
 // Rotray Encoders and buttons

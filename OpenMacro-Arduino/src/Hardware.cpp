@@ -5,14 +5,17 @@ HardwareRotaryEncoder *enc0;
 MFRC522 rfid;
 U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
 
+// io abstraction object
+MultiIoAbstractionRef multiIo = multiIoExpander(EXPANDER_PIN_OFFSET);
+
 void HardwareSetup()
 {
     // We use IOAbstraction library to handle switches and rotary encoders.
     // It also has built task manager for easy scheduling.
     // With the help of this library, we can also add IO pins with I2C expanders and can use them as if they were original arduino pins.
     // https://www.thecoderscorner.com/products/arduino-libraries/io-abstraction/
-
-    switches.init(ioUsingArduino(), SWITCHES_POLL_KEYS_ONLY, true);
+    multiIoAddExpander(multiIo, ioFrom23017(0x20), 16);
+    switches.init(multiIo, SWITCHES_POLL_KEYS_ONLY, true);
     
     //* setup rotray encoder
     enc0 = new HardwareRotaryEncoder(ENCA, ENCB, EncCallback, HWACCEL_SLOWER);
@@ -34,36 +37,19 @@ void HardwareSetup()
     switches.addSwitch(BTN7_PIN, BtnPressCallback);
     switches.addSwitch(BTN8_PIN, BtnPressCallback);
 
-    // addSwitch() only binds a callback for button press, we need to bind button release callback separetely.
-    switches.onRelease(BTN_ENC_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN_JOY_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN0_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN1_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN2_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN3_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN4_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN5_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN6_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN7_PIN, BtnReleaseCallback);
-    switches.onRelease(BTN8_PIN, BtnReleaseCallback);
-
     //* setup joystick
     ioDevicePinMode(ioUsingArduino(), JOY_X, INPUT);
     ioDevicePinMode(ioUsingArduino(), JOY_Y, INPUT);
 
     //* setup display
+    u8x8.print(" "); // Somehow this is required or the display won't work...
     u8x8.begin();
     u8x8.clear();
-    u8x8.setFont(u8x8_font_8x13_1x2_r); // choose a suitable font
-    u8x8.setCursor(0, 0);               // set write position
-    u8x8.print("hello world");      // write something to the internal memory
+    u8x8.setFont(u8x8_font_victoriamedium8_u); // choose a suitable font
 
     //* setup RFID
     SPI.begin();
     rfid.PCD_Init(RFID_SS, RFID_RST);
-    //Serial.print("RFID reader :");
-    //rfid.PCD_DumpVersionToSerial();
-    Serial.println();
 
     //*  start keyboard library
     Keyboard.begin();

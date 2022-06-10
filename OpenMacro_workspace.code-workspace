@@ -18,7 +18,8 @@
 			"xstring": "cpp",
 			"xutility": "cpp",
 			"iosfwd": "cpp",
-			"stdexcept": "cpp"
+			"stdexcept": "cpp",
+			"functional": "cpp"
 		}
 	}
 }
