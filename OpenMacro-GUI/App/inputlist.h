@@ -3,6 +3,9 @@
 
 #include <QListWidget>
 #include <QPushButton>
+#include <QLineEdit>
+#include <QLabel>
+#include <QValidator>
 #include "./presetmenu.h"
 #include "./commandlist.h"
 class PresetMenu;
@@ -15,9 +18,13 @@ class InputList : public QListWidget
     CommandList* commandList;
     QPushButton* newAction;
     QPushButton* deleteAction;
+    QLineEdit* addressInput;
+    QWidget* addressForm;
+    QLabel* addressLabel;
+    QIntValidator addressValidator;
 public:
     InputList(QWidget *parent = nullptr);
-    void injectDependencies(PresetMenu* presetMenu, QPushButton* newAction, QPushButton* deleteAction, CommandList* commandList);
+    void injectDependencies(PresetMenu* presetMenu, QPushButton* newAction, QPushButton* deleteAction, CommandList* commandList, QLineEdit *addressInput, QWidget *addressForm, QLabel *addressLabel);
     void updateButtonStates();
     void onNewPreset(const Preset& preset);
     void setDirty(bool newDirty);

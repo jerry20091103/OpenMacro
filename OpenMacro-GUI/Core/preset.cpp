@@ -8,6 +8,7 @@ const QString Preset::fileExtension = ".json"; // Open Macro Preset (json)
 const char* macroModeField = "mode";
 const char* macroDelayField = "delay";
 const char* macroCommandsField = "commands";
+const char* expanderAddressField = "expander_addresses";
 const char* inputArrayField = "macro_actions";
 const char* mouseButtonField = "button";
 const char* mouseXField = "x";
@@ -46,6 +47,8 @@ Preset::Preset()
 {
     for(int i = 0; i < NUM_BTN_INPUTS; ++i)
         addInput();
+    for(int i = 0; i < MAX_EXPANDERS; ++i)
+        expanderAddr[i] = 0;
 }
 
 void Preset::readFrom(QString fileName)
@@ -61,7 +64,9 @@ void Preset::readFrom(QString fileName)
     const QJsonObject jsonObject = QJsonDocument::fromJson(bytes).object();
     // TODO: Read from JSON object into class properties.
     verifyOMPField(jsonObject, inputArrayField, QJsonValue::Array);
+    verifyOMPField(jsonObject, expanderAddressField, QJsonValue::Array);
     const QJsonArray inputArray = jsonObject[inputArrayField].toArray();
+    const QJsonArray addrArray = jsonObject[expanderAddressField].toArray();
     (*this) = Preset(); // Reset this preset
     int idx = 0;
     foreach(const QJsonValue& val, inputArray){
@@ -101,6 +106,10 @@ void Preset::readFrom(QString fileName)
                 break;
             }
         }
+
+    }
+    for(idx = 0; idx < MAX_EXPANDERS; ++idx) {
+        expanderAddr[idx] = addrArray[idx].toInt(0);
     }
     file.close();
 }
@@ -143,6 +152,12 @@ void Preset::saveAs(QString fileName) const
         inputArray.append(inputObject);
     }
     jsonObject[inputArrayField] = inputArray;
+
+    QJsonArray addressArray;
+    for(int idx = 0; idx < MAX_EXPANDERS; ++idx){
+        addressArray.push_back(expanderAddr[idx]);
+    }
+    jsonObject[expanderAddressField] = addressArray;
     file.write(QJsonDocument(jsonObject).toJson());
     if(!file.flush()){
         file.close();
@@ -161,6 +176,7 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
             throw "Error: " + serialPort.errorString();
         }
         qDebug() << "Bytes read:" << bytesRead;
+        memcpy(expanderAddr, data.expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
         // Clear any existing inputs to prevent accidents.
         inputs.clear();
         for(int idx = 0; idx < data.numInputs; ++idx){
@@ -177,6 +193,8 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
             }
             inputs.push_back(input);
         }
+
+
     }
     else throw "Port " + serialPort.portName() + " is not open.";
 }
@@ -185,6 +203,8 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
 {
     if(serialPort.isOpen() && serialPort.isWritable()){
         MacroConfig data;
+        // Copy expander addresses
+        memcpy(data.expanderAddr, expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
         data.numInputs = this->inputs.size();
         // We need to keep track of dataPtr to write correct data offsets.
         uint16_t dataPtr = 0;
