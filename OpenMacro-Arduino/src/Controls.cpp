@@ -37,7 +37,7 @@ uint8_t getInputPinNum(uint8_t hardwarePin)
     // expanded pins
     if (hardwarePin >= EXPANDER_PIN_OFFSET)
     {
-        return hardwarePin - EXPANDER_PIN_OFFSET + NUM_BTN_INPUTS + 1;
+        return hardwarePin - EXPANDER_PIN_OFFSET + NUM_BTN_INPUTS;
     }
     // internal pins
     else

@@ -14,7 +14,6 @@ void HardwareSetup()
     // It also has built task manager for easy scheduling.
     // With the help of this library, we can also add IO pins with I2C expanders and can use them as if they were original arduino pins.
     // https://www.thecoderscorner.com/products/arduino-libraries/io-abstraction/
-    multiIoAddExpander(multiIo, ioFrom23017(0x20), 16);
     switches.init(multiIo, SWITCHES_POLL_KEYS_ONLY, true);
     
     //* setup rotray encoder
@@ -36,6 +35,11 @@ void HardwareSetup()
     switches.addSwitch(BTN6_PIN, BtnPressCallback);
     switches.addSwitch(BTN7_PIN, BtnPressCallback);
     switches.addSwitch(BTN8_PIN, BtnPressCallback);
+    // multiIoAddExpander(multiIo, ioFrom23017(0x20), 16);
+    // switches.addSwitch(EXPANDER_PIN_OFFSET, BtnPressCallback);
+    // switches.addSwitch(EXPANDER_PIN_OFFSET + 1, BtnPressCallback);
+    // switches.addSwitch(EXPANDER_PIN_OFFSET + 2, BtnPressCallback);
+    // switches.addSwitch(EXPANDER_PIN_OFFSET + 3, BtnPressCallback);
 
     //* setup joystick
     ioDevicePinMode(ioUsingArduino(), JOY_X, INPUT);

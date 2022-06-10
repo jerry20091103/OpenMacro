@@ -1,5 +1,6 @@
 #include "Macros.h"
 #include "Hardware.h"
+#include "Controls.h"
 
 Macros macros;
 
@@ -24,7 +25,7 @@ void Macros::saveToEEPROM()
 
 bool Macros::readFromEEPROM()
 {
-    if(EEPROM.read(0) != 1)
+    if (EEPROM.read(0) != 1)
     {
         return false;
     }
@@ -32,13 +33,32 @@ bool Macros::readFromEEPROM()
     return true;
 }
 
-void Macros::setupMacros()
+uint8_t Macros::setupMacros()
 {
-    // add two expanders
-    // ! need to test hotswapping expanded pins
-    if (config.macroConfig.expanderAddr[0] != 0x00)
+    uint8_t expanded = 0;
+    // setup expanders
+    for (uint8_t i = 0; i < MAX_EXPANDERS; i++)
     {
+        if (config.macroConfig.numInputs > NUM_BTN_INPUTS + i * 16)
+        {
+            // test if address out of range
+            if (config.macroConfig.expanderAddr[i] < 0x20 || config.macroConfig.expanderAddr[i] > 0x27)
+                continue; 
+            // test i2c connection
+            Wire.beginTransmission(config.macroConfig.expanderAddr[i]);
+            if(Wire.endTransmission())
+                continue;
+            // add expander
+            multiIoAddExpander(multiIo, ioFrom23017(config.macroConfig.expanderAddr[i]), 16);
+            // setup buttons
+            for (uint8_t btn = 0; btn < config.macroConfig.numInputs - NUM_BTN_INPUTS - i * 16 && btn < 16; btn++)
+            {
+                switches.addSwitch(btn + EXPANDER_PIN_OFFSET + i * 16, BtnPressCallback);
+            }
+            expanded++;
+        }
     }
+    return expanded;
 }
 
 void Macros::runMacro(uint8_t input)
@@ -76,7 +96,7 @@ void Macros::runMacro(uint8_t input)
         // release modifier
         Keyboard.release((KeyboardKeycode)packet->modifierCode);
         Keyboard.flush();
-        if (delay > 0 && i != config.macroConfig.inputs[input].size-1)
+        if (delay > 0 && i != config.macroConfig.inputs[input].size - 1)
         {
             taskManager.yieldForMicros(1000000 * delay);
         }
@@ -87,6 +107,11 @@ void Macros::runMacro(uint8_t input)
 void Macros::clearConfig()
 {
     memset(&config, 0, sizeof(MacroConfig));
+}
+
+bool Macros::checkExpanders()
+{
+    return config.macroConfig.numInputs > NUM_BTN_INPUTS;
 }
 
 // print current config to serial

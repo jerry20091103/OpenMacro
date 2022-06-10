@@ -51,6 +51,8 @@ extern MFRC522 rfid;
 // OLED display object
 extern U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
 
+extern MultiIoAbstractionRef multiIo;
+
 void HardwareSetup();
 
 #endif

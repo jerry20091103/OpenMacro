@@ -10,6 +10,9 @@
     HID-Project by NicoHood  (extends functionality of Arduino HID library)
 */
 
+// reset function
+void (*resetFunc)(void) = 0;
+
 void readRfid()
 {
     if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial())
@@ -45,6 +48,11 @@ void receiveSerial()
             macros.saveToEEPROM();
             u8x8.setCursor(0, 0);
             u8x8.print("MACRO RECEIVED");
+            if (macros.checkExpanders())
+            {
+                // reset required if add expanded pins
+                resetFunc();
+            }
         }
         else
         {
@@ -88,6 +96,12 @@ void setup()
     {
         u8x8.setCursor(0, 0);
         u8x8.print("WELCOME");
+        uint8_t expanded = 0;
+        if (expanded = macros.setupMacros())
+        {
+            u8x8.setCursor(0, 18);
+            u8x8.print(String(expanded) + " EXPANDER ADDED");
+        }
     }
 }
 

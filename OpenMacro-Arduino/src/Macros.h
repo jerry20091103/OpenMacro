@@ -8,7 +8,7 @@ class Macros
 {
 private:
     Config config;
-    void setupMacros();
+    
 public:
     int16_t readFromSerial();
     bool sendToSerial();
@@ -17,6 +17,8 @@ public:
     void clearConfig();
     void dumpConfig();
     void runMacro(uint8_t input);
+    uint8_t setupMacros();
+    bool checkExpanders();
 
     bool runningMacro = false;
 };
