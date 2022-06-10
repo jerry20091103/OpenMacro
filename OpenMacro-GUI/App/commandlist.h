@@ -23,6 +23,7 @@ public:
     void injectDependencies(InputList* inputList, ConfigMacroForm* configMacroForm, QWidget* actionNewCommand, QWidget* actionDeleteSelectedCommand, QSpinBox* delayInput);
     void updateCommandList(const std::vector<MacroPacket> &commands);
     void setDirty(bool newDirty);
+    void disable();
     MacroPacket &getCurrentCommand();
 public slots:
     void onNewCommand();

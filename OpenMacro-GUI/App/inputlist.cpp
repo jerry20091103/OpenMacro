@@ -54,6 +54,7 @@ void InputList::onDeleteSelected()
 void InputList::onSelectChanged()
 {
     qDebug() << "onSelectChanged";
+    this->commandList->disable();
     this->commandList->updateCommandList(
                 getCurrentInput()
                         .packets);
