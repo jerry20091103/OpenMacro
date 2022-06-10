@@ -19,7 +19,10 @@ MainWindow::MainWindow(QWidget *parent)
                 ui->menuPresets,
                 ui->actionNewInput,
                 ui->actionDeleteSelectedInput,
-                ui->commandList);
+                ui->commandList,
+                ui->addressInput,
+                ui->addressForm,
+                ui->addressLabel);
     ui->commandList->injectDependencies(
                 ui->inputList,
                 ui->configMacroForm,

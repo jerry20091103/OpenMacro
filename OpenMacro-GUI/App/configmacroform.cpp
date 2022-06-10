@@ -1,5 +1,7 @@
 #include "configmacroform.h"
 
+#define SET_DIRTY_IF(clause) if(clause) this->commandList->setDirty(true)
+
 static const QMetaEnum keys = QMetaEnum::fromType<InoInterface::KeyboardKeycode>();
 ConfigMacroForm::ConfigMacroForm(QWidget *parent) : QGroupBox(parent)
 {
@@ -39,26 +41,26 @@ void ConfigMacroForm::injectDependencies(CommandList *commandList,
     connect(mouseXInput, &QSpinBox::valueChanged, this, [&](int newVal){
         if(!this->isEnabled()) return;
         qDebug() << "mouseXInput";
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().mouseMove.mouseX != newVal);
         this->commandList->getCurrentCommand().mouseMove.mouseX = newVal;
-        this->commandList->setDirty(true);
     });
     connect(mouseYInput, &QSpinBox::valueChanged, this, [&](int newVal){
         if(!this->isEnabled()) return;
         qDebug() << "mouseYInput";
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().mouseMove.mouseY != newVal);
         this->commandList->getCurrentCommand().mouseMove.mouseY = newVal;
-        this->commandList->setDirty(true);
     });
     connect(mouseScrollInput, &QSpinBox::valueChanged, this, [&](int newVal){
         if(!this->isEnabled()) return;
         qDebug() << "mouseScrollInput";
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().mouseMove.wheel != newVal);
         this->commandList->getCurrentCommand().mouseMove.wheel = newVal;
-        this->commandList->setDirty(true);
     });
     connect(inputModeInput, &QComboBox::currentIndexChanged, this, [&](int newIndex){
         if(!this->isEnabled()) return;
         qDebug() << "inputModeInput" << QString::number(newIndex);
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().mode != static_cast<MacroMode>(newIndex));
         this->commandList->getCurrentCommand().mode = static_cast<MacroMode>(newIndex);
-        this->commandList->setDirty(true);
         this->updateVisibility();
     });
     connect(mouseButtonInput, &QComboBox::currentIndexChanged, this, [&](int newIndex){
@@ -66,8 +68,8 @@ void ConfigMacroForm::injectDependencies(CommandList *commandList,
         qDebug() << "mouseButtonInput" << QString::number(newIndex);
         qDebug() << this->mouseButtonInput->itemText(newIndex);
         qDebug() << "Mouse button code: " << (1 << newIndex);
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().mouseMove.mouseBtn != (1 << newIndex));
         this->commandList->getCurrentCommand().mouseMove.mouseBtn = (1 << newIndex);
-        this->commandList->setDirty(true);
     });
     connect(keyInput, &QComboBox::currentIndexChanged, this, [&](int newIndex){
         if(!this->isEnabled()) return;
@@ -76,8 +78,8 @@ void ConfigMacroForm::injectDependencies(CommandList *commandList,
         std::string enumKey = this->keyInput->itemText(newIndex).toStdString();
         int inputKey = keys.keyToValue(enumKey.c_str());
         qDebug() << "Keycode:" << (int)inputKey;
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().keycode != inputKey);
         this->commandList->getCurrentCommand().keycode = inputKey;
-        this->commandList->setDirty(true);
     });
     connect(modifierInput, &QComboBox::currentIndexChanged, this, [&](int newIndex){
         if(!this->isEnabled()) return;
@@ -86,8 +88,8 @@ void ConfigMacroForm::injectDependencies(CommandList *commandList,
         std::string enumKey = this->modifierInput->itemText(newIndex).toStdString();
         int inputKey = keys.keyToValue(enumKey.c_str());
         qDebug() << "Keycode:" << (int)inputKey;
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().modifierCode != inputKey);
         this->commandList->getCurrentCommand().modifierCode = inputKey;
-        this->commandList->setDirty(true);
     });
     this->inputModeInput->addItem("Keyboard");
     this->inputModeInput->addItem("Mouse");
@@ -157,3 +159,5 @@ void ConfigMacroForm::initModifierInput(QComboBox* modifierInput){
         modifierInput->addItem(key);
     }
 }
+
+#undef SET_DIRTY_IF

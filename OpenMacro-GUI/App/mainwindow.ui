@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>774</width>
+    <width>803</width>
     <height>598</height>
    </rect>
   </property>
@@ -47,7 +47,42 @@
         <property name="title">
          <string>Configure Inputs</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="9,1">
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,9,1">
+         <item>
+          <widget class="QWidget" name="addressForm" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="0,0">
+            <property name="spacing">
+             <number>7</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="addressLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Address</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="addressInput">
+              <property name="maxLength">
+               <number>8</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
          <item>
           <widget class="InputList" name="inputList">
            <property name="layoutDirection">
@@ -171,7 +206,7 @@
         <property name="flat">
          <bool>false</bool>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,1,1">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QFrame" name="inputModeForm">
            <property name="enabled">
@@ -463,7 +498,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>774</width>
+     <width>803</width>
      <height>26</height>
     </rect>
    </property>

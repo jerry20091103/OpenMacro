@@ -18,7 +18,8 @@ void CommandList::injectDependencies(InputList *inputList, ConfigMacroForm *conf
     this->actionDeleteSelectedCommand->setEnabled(false);
     this->delayInput = delayInput;
     connect(delayInput, &QSpinBox::valueChanged, this, [&](int value) {
-        setDirty(this->inputList->getCurrentInput().delay != value);
+        if(this->inputList->getCurrentInput().delay != value)
+            setDirty(true);
         this->inputList->getCurrentInput().delay = value;
     });
     this->delayInput->setEnabled(false);
@@ -37,11 +38,18 @@ void CommandList::updateCommandList(const std::vector<MacroPacket>& commands)
     this->delayInput->setMinimum(0);
     this->delayInput->setMaximum(UINT16_MAX);
     this->delayInput->setValue(this->inputList->getCurrentInput().delay);
+    this->setEnabled(true);
 }
 
 void CommandList::setDirty(bool newDirty)
 {
     this->inputList->setDirty(newDirty);
+}
+
+void CommandList::disable()
+{
+    this->configMacroForm->setEnabled(false);
+    this->setEnabled(false);
 }
 
 MacroPacket& CommandList::getCurrentCommand() {

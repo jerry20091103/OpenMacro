@@ -13,8 +13,9 @@ public:
         uint16_t delay = 1;
         std::vector<MacroPacket> packets;
     };
-private:
+    uint8_t expanderAddr[MAX_EXPANDERS];
     MacroPassword passwords[MAX_PASSWORDS];
+private:
     std::vector<Input> inputs;
 public:
     Preset();

@@ -69,14 +69,14 @@
    <item>
     <widget class="QPushButton" name="uploadButton">
      <property name="text">
-      <string>Upload</string>
+      <string>Upload Preset</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="downloadButton">
      <property name="text">
-      <string>Download</string>
+      <string>Download Preset</string>
      </property>
     </widget>
    </item>
