@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>803</width>
-    <height>675</height>
+    <height>598</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -88,6 +88,41 @@
          <string>Commands</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <widget class="QWidget" name="addressForm_2" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="0,0">
+            <property name="spacing">
+             <number>7</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Address</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="addressInput">
+              <property name="maxLength">
+               <number>8</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
          <item>
           <widget class="QWidget" name="mouseXForm_2" native="true">
            <property name="sizePolicy">
@@ -172,59 +207,6 @@
          <bool>false</bool>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QFrame" name="addressForm">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="lineWidth">
-            <number>0</number>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_8">
-            <item>
-             <widget class="QWidget" name="horizontalWidget_4" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="0,0">
-               <property name="spacing">
-                <number>7</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_9">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Address</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="addressInput">
-                 <property name="maxLength">
-                  <number>8</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item>
           <widget class="QFrame" name="inputModeForm">
            <property name="enabled">
