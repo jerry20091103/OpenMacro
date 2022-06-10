@@ -188,6 +188,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         data.numInputs = this->inputs.size();
         // We need to keep track of dataPtr to write correct data offsets.
         uint16_t dataPtr = 0;
+        int inputIdx = 0;
         foreach(const Input& input, this->inputs){
             MacroAction action;
             action.delay = input.delay;
@@ -196,6 +197,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
             std::memcpy(data.commandBuffer + dataPtr, // Write to command buffer
                         input.packets.data(), // Read from Qt side's data pointer
                         sizeof(MacroPacket) * input.packets.size());
+            data.inputs[inputIdx++] = action;
             dataPtr += sizeof(MacroPacket) * input.packets.size();
         }
         // TODO: Fill in expander address later
