@@ -10,7 +10,7 @@ class Preset
 {
 public:
     struct Input {
-        uint8_t delay = 1;
+        uint16_t delay = 1;
         std::vector<MacroPacket> packets;
     };
 private:

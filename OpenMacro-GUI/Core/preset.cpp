@@ -71,7 +71,7 @@ void Preset::readFrom(QString fileName)
         const QJsonObject& inputObject = val.toObject();
         verifyOMPField(inputObject, macroDelayField, QJsonValue::Double);
         verifyOMPField(inputObject, macroCommandsField, QJsonValue::Array);
-        input.delay = static_cast<uint8_t>(inputObject[macroDelayField].toInt());
+        input.delay = static_cast<uint16_t>(inputObject[macroDelayField].toInt());
         input.packets.clear();
         const QJsonArray& macroCommandsArray = inputObject[macroCommandsField].toArray();
         int jdx = 0;
@@ -187,7 +187,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         MacroConfig data;
         data.numInputs = this->inputs.size();
         // We need to keep track of dataPtr to write correct data offsets.
-        int dataPtr = 0;
+        uint16_t dataPtr = 0;
         foreach(const Input& input, this->inputs){
             MacroAction action;
             action.delay = input.delay;

@@ -35,7 +35,7 @@ void CommandList::updateCommandList(const std::vector<MacroPacket>& commands)
     this->actionDeleteSelectedCommand->setEnabled(idx != 0);
     this->delayInput->setEnabled(true);
     this->delayInput->setMinimum(0);
-    this->delayInput->setMaximum(255);
+    this->delayInput->setMaximum(UINT16_MAX);
     this->delayInput->setValue(this->inputList->getCurrentInput().delay);
 }
 
