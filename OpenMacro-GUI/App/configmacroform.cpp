@@ -23,6 +23,15 @@ void ConfigMacroForm::injectDependencies(CommandList *commandList,
     this->mouseButtonInput = mouseButtonInput;
     this->keyInput = keyInput;
     this->modifierInput = modifierInput;
+
+    // Set input ranges for spinboxes based on their underlying types
+    this->mouseXInput->setMinimum(INT16_MIN);
+    this->mouseXInput->setMaximum(INT16_MAX);
+    this->mouseYInput->setMinimum(INT16_MIN);
+    this->mouseYInput->setMaximum(INT16_MAX);
+    this->mouseScrollInput->setMinimum(INT16_MIN);
+    this->mouseScrollInput->setMaximum(INT16_MAX);
+
     disable();
     // Use lambdas for simplicity.
     // "this" is used to access member variables (not to be confused with
