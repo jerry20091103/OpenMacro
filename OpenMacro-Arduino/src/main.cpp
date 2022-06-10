@@ -41,8 +41,22 @@ void receiveSerial()
         int16_t bytes;
 
         bytes = macros.readFromSerial();
-        u8x8.setCursor(0, 0);
-        u8x8.print("Received " + String(bytes));
+        if(bytes == sizeof(MacroConfig))
+        {
+            macros.saveToEEPROM();
+            u8x8.setCursor(0, 0);
+            u8x8.print("Macro Received  ");
+        }
+        else
+        {
+            u8x8.setCursor(0, 0);
+            u8x8.print("Receive ERROR " + String(bytes));
+            // roll back contents from eeprom
+            if(!macros.readFromEEPROM())
+            {
+                macros.clearConfig();
+            }
+        }
     }
 }
 
@@ -65,8 +79,12 @@ void setup()
     taskManager.scheduleFixedRate(10, receiveSerial, TIME_MICROS);
     taskManager.scheduleFixedRate(100, readAnalog);
 
+    if(!macros.readFromEEPROM())
+    {
+        u8x8.setCursor(0, 0);
+        u8x8.print("No Macro Config");
+    }
     Serial.begin(9600);
-    delay(1000);
 }
 
 void loop()

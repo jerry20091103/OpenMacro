@@ -18,6 +18,10 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
         Serial.println("EMERGENCY STOP");
         while (true) {}
     }
+    else if(pin == BTN1_PIN && isHeld)
+    {
+        macros.dumpConfig();
+    }
 
     macros.runMacro(getInputPinNum(pin));
 }
@@ -94,6 +98,7 @@ uint8_t getInputPinNum(uint8_t hardwarePin)
             break;
 
         default:
+            return 200;
             break;
         }
     }

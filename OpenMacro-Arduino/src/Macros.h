@@ -8,12 +8,15 @@ class Macros
 {
 private:
     MacroConfig config;
+    void setupMacros();
 public:
     int16_t readFromSerial();
     bool sendToSerial();
     void saveToEEPROM();
-    void readFromEEPROM();
-    void setupMacros();
+    bool readFromEEPROM();
+    void clearConfig();
+    void dumpConfig();
+
 
     void runMacro(uint8_t input);
 };

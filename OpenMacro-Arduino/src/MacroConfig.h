@@ -54,9 +54,9 @@ struct MacroPacket
         uint8_t keycode;
         struct __attribute__ ((packed)) {
             uint8_t mouseBtn;
-            int16_t mouseX;
-            int16_t mouseY;
-            int16_t wheel;
+            int8_t mouseX;
+            int8_t mouseY;
+            int8_t wheel;
             // mouseBtn defaults to click drag, for click only, set mouseX, Y to 0.
         } mouseMove;
     };
