@@ -8,24 +8,40 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
 
     // !DEBUG
     // hold BTN1 to print config to serial
-    if(pin == BTN1_PIN && isHeld)
+    if (pin == BTN1_PIN && isHeld)
     {
         macros.dumpConfig();
     }
-
-    macros.runMacro(getInputPinNum(pin));
+    else if (pin == BTN_ENC_PIN)
+    {
+        macros.passwordMode = !macros.passwordMode;
+        if (macros.passwordMode && !macros.readRfid())
+        {
+            macros.passwordMode = false;
+            u8x8.setCursor(0, 0);
+            u8x8.print(F("RFID AUTH FAILED"));
+            taskManager.scheduleOnce(5000, displayCurMode);
+        }
+        else
+        {
+            displayCurMode();
+        }
+    }
+    else if (!isHeld)
+    {
+        macros.runMacro(getInputPinNum(pin));
+    }
 }
 
 void EncCallback(int value)
 {
     Serial.println("Encoder:" + String(value));
 
-
-     if(value > 0)
+    if (value > 0)
     {
         macros.runMacro(ENC_INC);
     }
-    else if(value < 0)
+    else if (value < 0)
     {
         macros.runMacro(ENC_DEC);
     }
@@ -81,4 +97,3 @@ uint8_t getInputPinNum(uint8_t hardwarePin)
         }
     }
 }
-

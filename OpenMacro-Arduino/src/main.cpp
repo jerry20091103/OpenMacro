@@ -10,9 +10,6 @@
     HID-Project by NicoHood  (extends functionality of Arduino HID library)
 */
 
-// reset function
-void (*resetFunc)(void) = 0;
-
 void readRfid()
 {
     if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial())
@@ -38,8 +35,7 @@ void receiveSerial()
     if (Serial && Serial.available())
     {
         u8x8.clear();
-        u8x8.setCursor(0, 0);
-        u8x8.print("RECEIVING");
+        u8x8.print(F("RECEIVING")); // the "F()" stuff around the string means we store the string in flash instead of SRAM
         int16_t bytes;
 
         bytes = macros.readFromSerial();
@@ -47,23 +43,22 @@ void receiveSerial()
         {
             macros.saveToEEPROM();
             u8x8.setCursor(0, 0);
-            u8x8.print("MACRO RECEIVED");
-            if (macros.checkExpanders())
-            {
-                // reset required if add expanded pins
-                resetFunc();
-            }
+            u8x8.print(F("MACRO RECEIVED"));
+            // open 1200 magic baud to let GUI force reset
+            Serial.end();
+            Serial.begin(1200);
         }
         else
         {
-            u8x8.setCursor(0, 0);
-            u8x8.print("ERROR" + String(bytes));
+            u8x8.clear();
+            u8x8.print("ERROR " + String(bytes));
             // roll back contents from eeprom
             if (!macros.readFromEEPROM())
             {
                 macros.clearConfig();
             }
         }
+        taskManager.scheduleOnce(5000, displayCurMode);
     }
 }
 
@@ -83,19 +78,18 @@ void setup()
     Serial.begin(9600);
     HardwareSetup();
 
-    taskManager.scheduleFixedRate(100, readRfid);
-    taskManager.scheduleFixedRate(10, receiveSerial, TIME_MICROS);
+    taskManager.scheduleFixedRate(100, receiveSerial, TIME_MICROS);
     taskManager.scheduleFixedRate(100, readAnalog);
 
     if (!macros.readFromEEPROM())
     {
         u8x8.setCursor(0, 0);
-        u8x8.print("NO MACRO CONFIG");
+        u8x8.print(F("NO MACRO CONFIG"));
     }
     else
     {
         u8x8.setCursor(0, 0);
-        u8x8.print("WELCOME");
+        u8x8.print(F("WELCOME"));
         uint8_t expanded = 0;
         if (expanded = macros.setupMacros())
         {
@@ -103,6 +97,7 @@ void setup()
             u8x8.print(String(expanded) + " EXPANDER ADDED");
         }
     }
+    taskManager.scheduleOnce(5000, displayCurMode);
 }
 
 void loop()

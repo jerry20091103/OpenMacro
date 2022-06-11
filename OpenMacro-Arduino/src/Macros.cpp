@@ -43,10 +43,10 @@ uint8_t Macros::setupMacros()
         {
             // test if address out of range
             if (config.macroConfig.expanderAddr[i] < 0x20 || config.macroConfig.expanderAddr[i] > 0x27)
-                continue; 
+                continue;
             // test i2c connection
             Wire.beginTransmission(config.macroConfig.expanderAddr[i]);
-            if(Wire.endTransmission())
+            if (Wire.endTransmission())
                 continue;
             // add expander
             multiIoAddExpander(multiIo, ioFrom23017(config.macroConfig.expanderAddr[i]), 16);
@@ -64,41 +64,54 @@ uint8_t Macros::setupMacros()
 void Macros::runMacro(uint8_t input)
 {
     runningMacro = true;
-    if (input >= config.macroConfig.numInputs)
-        return;
-
-    uint16_t delay = config.macroConfig.inputs[input].delay;
-    for (uint8_t i = 0; i < config.macroConfig.inputs[input].size; i++)
+    if (passwordMode)
     {
-        MacroPacket *packet = (MacroPacket *)&config.macroConfig.commandBuffer[config.macroConfig.inputs[input].data + sizeof(MacroPacket) * i];
+        if (input > 8)
+            return;
+        config.passwordConfig.passwords[0].size = 10;
+        strcpy(config.passwordConfig.passwords[0].str, "qWeRtYuIoP");
+        Keyboard.print(config.passwordConfig.passwords[0].str);
+        passwordMode = false;
+        displayCurMode();
+    }
+    else
+    {
+        if (input >= config.macroConfig.numInputs)
+            return;
 
-        // press modifiers
-        Keyboard.press((KeyboardKeycode)packet->modifierCode);
-
-        if (packet->mode == MOUSE_MOVE)
+        uint16_t delay = config.macroConfig.inputs[input].delay;
+        for (uint8_t i = 0; i < config.macroConfig.inputs[input].size; i++)
         {
-            if (packet->mouseMove.mouseBtn != 0)
+            MacroPacket *packet = (MacroPacket *)&config.macroConfig.commandBuffer[config.macroConfig.inputs[input].data + sizeof(MacroPacket) * i];
+
+            // press modifiers
+            Keyboard.press((KeyboardKeycode)packet->modifierCode);
+
+            if (packet->mode == MOUSE_MOVE)
             {
-                Mouse.press(packet->mouseMove.mouseBtn);
-                Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
-                Mouse.release(packet->mouseMove.mouseBtn);
+                if (packet->mouseMove.mouseBtn != 0)
+                {
+                    Mouse.press(packet->mouseMove.mouseBtn);
+                    Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
+                    Mouse.release(packet->mouseMove.mouseBtn);
+                }
+                else
+                {
+                    Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
+                }
             }
-            else
+            else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {
-                Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
+                Keyboard.write((KeyboardKeycode)packet->keycode);
             }
-        }
-        else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
-        {
-            Keyboard.write((KeyboardKeycode)packet->keycode);
-        }
 
-        // release modifier
-        Keyboard.release((KeyboardKeycode)packet->modifierCode);
-        Keyboard.flush();
-        if (delay > 0 && i != config.macroConfig.inputs[input].size - 1)
-        {
-            taskManager.yieldForMicros(1000000 * delay);
+            // release modifier
+            Keyboard.release((KeyboardKeycode)packet->modifierCode);
+            Keyboard.flush();
+            if (delay > 0 && i != config.macroConfig.inputs[input].size - 1)
+            {
+                taskManager.yieldForMicros(1000000 * delay);
+            }
         }
     }
     runningMacro = false;
@@ -117,16 +130,16 @@ bool Macros::checkExpanders()
 // print current config to serial
 void Macros::dumpConfig()
 {
-    Serial.println("Dumping Config");
-    Serial.print("expanderAddr: ");
+    Serial.println(F("Dumping Config"));
+    Serial.print(F("expanderAddr: "));
     for (uint8_t i = 0; i < MAX_EXPANDERS; i++)
     {
         Serial.print(config.macroConfig.expanderAddr[i], HEX);
         Serial.print(" ");
     }
-    Serial.print("\nnumInputs: ");
+    Serial.print(F("\nnumInputs: "));
     Serial.print(config.macroConfig.numInputs);
-    Serial.println("\ninputs:");
+    Serial.println(F("\ninputs:"));
     for (uint8_t i = 0; i < config.macroConfig.numInputs; i++)
     {
         Serial.print(String(i) + " size: " + String(config.macroConfig.inputs[i].size) + "\tdelay: " + String(config.macroConfig.inputs[i].delay) + "\tdata: " + String(config.macroConfig.inputs[i].data) + "\n");
@@ -144,4 +157,41 @@ void Macros::dumpConfig()
             }
         }
     }
+}
+
+void displayCurMode()
+{
+    u8x8.clear();
+    if (macros.passwordMode)
+    {
+        u8x8.print(F("PASSWORD MODE"));
+    }
+    else
+    {
+        u8x8.print(F("MACRO MODE"));
+    }
+}
+
+bool Macros::readRfid()
+{
+    u8x8.clear();
+    u8x8.print(F("RFID AUTH"));
+    unsigned long time = millis();
+    while (!rfid.PICC_IsNewCardPresent() ||  !rfid.PICC_ReadCardSerial())
+    {
+        if(millis() - time > 10000)
+        {
+            return false;
+        }
+    }
+    Serial.print(F("RFID:"));
+    for (uint8_t i = 0; i < rfid.uid.size; i++)
+    {
+        Serial.print(rfid.uid.uidByte[i], HEX);
+        Serial.print(" ");
+
+        if (rfid.uid.uidByte[i] != rfidUID[i])
+            return false;
+    }
+    return true;
 }

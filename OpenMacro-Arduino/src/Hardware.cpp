@@ -15,14 +15,12 @@ void HardwareSetup()
     // With the help of this library, we can also add IO pins with I2C expanders and can use them as if they were original arduino pins.
     // https://www.thecoderscorner.com/products/arduino-libraries/io-abstraction/
     switches.init(multiIo, SWITCHES_POLL_KEYS_ONLY, true);
-    
     //* setup rotray encoder
     enc0 = new HardwareRotaryEncoder(ENCA, ENCB, EncCallback, HWACCEL_SLOWER);
     // add encoder to the switches object in the library
     switches.setEncoder(0, enc0);
     // set how the encoders operate
     enc0->changePrecision(0, 0);
-
     //* setup buttons
     switches.addSwitch(BTN_ENC_PIN, BtnPressCallback);
     switches.addSwitch(BTN_JOY_PIN, BtnPressCallback);
@@ -42,14 +40,14 @@ void HardwareSetup()
     // switches.addSwitch(EXPANDER_PIN_OFFSET + 3, BtnPressCallback);
 
     //* setup joystick
-    ioDevicePinMode(ioUsingArduino(), JOY_X, INPUT);
-    ioDevicePinMode(ioUsingArduino(), JOY_Y, INPUT);
+    ioDevicePinMode(multiIo, JOY_X, INPUT);
+    ioDevicePinMode(multiIo, JOY_Y, INPUT);
 
     //* setup display
-    u8x8.print(" "); // Somehow this is required or the display won't work...
+    u8x8.print(" "); // Somehow this is required for the display won't work...
     u8x8.begin();
-    u8x8.clear();
-    u8x8.setFont(u8x8_font_victoriamedium8_u); // choose a suitable font
+    u8x8.clear();   // maybe can delete 
+    u8x8.setFont(u8x8_font_artossans8_u);
 
     //* setup RFID
     SPI.begin();
