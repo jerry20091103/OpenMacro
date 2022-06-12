@@ -26,8 +26,8 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
         if (macros.passwordMode && !macros.readRfid())
         {
             macros.passwordMode = false;
-            u8x8.setCursor(0, 0);
-            u8x8.print(F("RFID FAILED"));
+            oled.setCol(0);
+            oled.print(F("RFID FAILED"));
             taskManager.scheduleOnce(5000, displayCurMode);
         }
         else

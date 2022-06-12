@@ -8,7 +8,7 @@ class Macros
 {
 private:
     Config config;
-    uint8_t rfidUID[4] = {0xb0, 0x5c, 0x45, 0xa0};
+    
     
 public:
     int16_t readFromSerial();
@@ -23,7 +23,7 @@ public:
     bool readRfid();
 
     bool passwordMode = false;
-    
+    uint8_t rfidUID[16] = {0xb0, 0x5c, 0x45, 0xa0};
 };
 
 void displayCurMode();

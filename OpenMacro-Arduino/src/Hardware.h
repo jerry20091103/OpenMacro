@@ -4,7 +4,8 @@
 #include "IoAbstractionWire.h"
 #include "TaskManagerIO.h"
 #include "MFRC522.h"
-#include "u8g2lib.h"
+#include "SSD1306Ascii.h"
+#include "SSD1306AsciiWire.h"
 #include "HID-Project.h"
 #include <EEPROM.h>
 #include <Wire.h>
@@ -49,7 +50,7 @@ extern HardwareRotaryEncoder* enc0;
 extern MFRC522 rfid;
 
 // OLED display object
-extern U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
+extern SSD1306AsciiWire oled;
 
 extern MultiIoAbstractionRef multiIo;
 

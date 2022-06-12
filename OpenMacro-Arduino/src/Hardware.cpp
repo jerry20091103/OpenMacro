@@ -3,13 +3,14 @@
 
 HardwareRotaryEncoder *enc0;
 MFRC522 rfid;
-U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
+SSD1306AsciiWire oled;
 
 // io abstraction object
 MultiIoAbstractionRef multiIo = multiIoExpander(EXPANDER_PIN_OFFSET);
 
 void HardwareSetup()
 {
+    Wire.begin();
     // We use IOAbstraction library to handle switches and rotary encoders.
     // It also has built task manager for easy scheduling.
     // With the help of this library, we can also add IO pins with I2C expanders and can use them as if they were original arduino pins.
@@ -40,10 +41,10 @@ void HardwareSetup()
     // switches.addSwitch(EXPANDER_PIN_OFFSET + 3, BtnPressCallback);
 
     //* setup display
-    u8x8.print(" "); // Somehow this is required for the display won't work...
-    u8x8.begin();
-    u8x8.clear();   // maybe can delete 
-    u8x8.setFont(u8x8_font_saikyosansbold8_u);
+    oled.begin(&Adafruit128x64, DISPLAY_ADD);
+    oled.setFont(Adafruit5x7);
+    oled.set2X();
+    oled.clear();
 
     //* setup RFID
     SPI.begin();

@@ -157,21 +157,21 @@ void Macros::dumpConfig()
 
 void displayCurMode()
 {
-    u8x8.clear();
+    oled.clear();
     if (macros.passwordMode)
     {
-        u8x8.print(F("PASSWORD MODE"));
+        oled.print(F("PASSWORD\nMODE"));
     }
     else
     {
-        u8x8.print(F("MACRO MODE"));
+        oled.print(F("MACRO MODE"));
     }
 }
 
 bool Macros::readRfid()
 {
-    u8x8.clear();
-    u8x8.print(F("RFID AUTH"));
+    oled.clear();
+    oled.print(F("RFID AUTH"));
     unsigned long time = millis();
     while (!rfid.PICC_IsNewCardPresent() ||  !rfid.PICC_ReadCardSerial())
     {
