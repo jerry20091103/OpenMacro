@@ -1,5 +1,6 @@
 #include "Controls.h"
 #include "Macros.h"
+#include "TaskManagerIO.h"
 #include "ExecWithParameter.h"
 
 void runMacroTask(uint8_t input)
@@ -10,7 +11,8 @@ void runMacroTask(uint8_t input)
 void BtnPressCallback(pinid_t pin, bool isHeld)
 {
     // we put serial here for testing
-    Serial.println("Button Press:" + String(pin));
+    // Serial.print(F("Button Press:"));
+    // Serial.println(pin);
 
     // !DEBUG
     // hold BTN1 to print config to serial
@@ -36,13 +38,14 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     else if (!isHeld)
     {
         auto task = new ExecWithParameter<uint8_t>(runMacroTask, getInputPinNum(pin));
-        taskManager.scheduleOnce(0, task, TIME_MILLIS, true);
+        taskManager.scheduleOnce(1, task, TIME_MILLIS, true);
     }
 }
 
 void EncCallback(int value)
 {
-    Serial.println("Encoder:" + String(value));
+    // Serial.print(F("Encoder:"));
+    // Serial.print(value);
 
     if (value > 0)
     {

@@ -10,26 +10,6 @@
     HID-Project by NicoHood  (extends functionality of Arduino HID library)
 */
 
-void readRfid()
-{
-    if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial())
-    {
-        Serial.print("RFID:");
-
-        u8x8.setCursor(0, 0);
-        u8x8.print("RFID:");
-
-        for (uint8_t i = 0; i < rfid.uid.size; i++)
-        {
-            Serial.print(rfid.uid.uidByte[i], HEX);
-            Serial.print(" ");
-            u8x8.print(rfid.uid.uidByte[i], HEX);
-            u8x8.print(" ");
-        }
-        Serial.println();
-    }
-}
-
 void receiveSerial()
 {
     if (Serial && Serial.available())
@@ -51,7 +31,8 @@ void receiveSerial()
         else
         {
             u8x8.clear();
-            u8x8.print("ERROR " + String(bytes));
+            u8x8.print(F("ERROR "));
+            u8x8.print(bytes);
             // roll back contents from eeprom
             if (!macros.readFromEEPROM())
             {
@@ -64,10 +45,9 @@ void receiveSerial()
 
 void readAnalog()
 {
-        // u8x8.setCursor(0, 38);
-        // u8x8.print("             "); // overwrite old numbers
-        // u8x8.setCursor(0, 38);
-        // u8x8.print(String(analogRead(JOY_X)) + " " + String(analogRead(JOY_Y)));
+    Gamepad.xAxis(map(analogRead(JOY_X), 0, 1024, INT16_MIN, INT16_MAX));
+    Gamepad.yAxis(map(analogRead(JOY_Y), 0, 1024, INT16_MIN, INT16_MAX));
+    Gamepad.write();
 }
 
 void setup()
@@ -76,7 +56,7 @@ void setup()
     HardwareSetup();
 
     taskManager.scheduleFixedRate(100, receiveSerial, TIME_MICROS);
-    taskManager.scheduleFixedRate(100, readAnalog);
+    taskManager.scheduleFixedRate(5, readAnalog);
 
     if (!macros.readFromEEPROM())
     {
@@ -91,10 +71,12 @@ void setup()
         if (expanded = macros.setupMacros())
         {
             u8x8.setCursor(0, 18);
-            u8x8.print(String(expanded) + " EXPANDER ADDED");
+            u8x8.print(String(expanded));
+            u8x8.print(F(" EXPANDER ADDED"));
         }
     }
     taskManager.scheduleOnce(5000, displayCurMode);
+
 }
 
 void loop()
