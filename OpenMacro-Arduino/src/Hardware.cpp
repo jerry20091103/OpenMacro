@@ -39,15 +39,11 @@ void HardwareSetup()
     // switches.addSwitch(EXPANDER_PIN_OFFSET + 2, BtnPressCallback);
     // switches.addSwitch(EXPANDER_PIN_OFFSET + 3, BtnPressCallback);
 
-    //* setup joystick
-    ioDevicePinMode(multiIo, JOY_X, INPUT);
-    ioDevicePinMode(multiIo, JOY_Y, INPUT);
-
     //* setup display
     u8x8.print(" "); // Somehow this is required for the display won't work...
     u8x8.begin();
     u8x8.clear();   // maybe can delete 
-    u8x8.setFont(u8x8_font_artossans8_u);
+    u8x8.setFont(u8x8_font_saikyosansbold8_u);
 
     //* setup RFID
     SPI.begin();

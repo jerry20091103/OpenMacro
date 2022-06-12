@@ -6,9 +6,7 @@ Macros macros;
 
 int16_t Macros::readFromSerial()
 {
-    int16_t read = 0;
-    read += Serial.readBytes((uint8_t *)&config.macroConfig, sizeof(MacroConfig));
-    return read;
+    return Serial.readBytes((uint8_t *)&config.macroConfig, sizeof(MacroConfig));
 }
 
 bool Macros::sendToSerial()
@@ -67,7 +65,6 @@ void Macros::runMacro(uint8_t input)
     {
         if (input > 8)
             return;
-        config.passwordConfig.passwords[0].size = 10;
         strcpy(config.passwordConfig.passwords[0].str, "qWeRtYuIoP");
         Keyboard.print(config.passwordConfig.passwords[0].str);
         passwordMode = false;
@@ -88,16 +85,17 @@ void Macros::runMacro(uint8_t input)
 
             if (packet->mode == MOUSE_MOVE)
             {
-                if (packet->mouseMove.mouseBtn != 0)
-                {
+                // ! test mouse btn 0 !!!
+                // if (packet->mouseMove.mouseBtn != 0)
+                // {
                     Mouse.press(packet->mouseMove.mouseBtn);
                     Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
                     Mouse.release(packet->mouseMove.mouseBtn);
-                }
-                else
-                {
-                    Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
-                }
+                // }
+                // else
+                // {
+                //     Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
+                // }
             }
             else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {

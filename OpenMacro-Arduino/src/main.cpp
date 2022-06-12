@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Hardware.h"
 #include "Macros.h"
+#include "AESLib.h"
 
 /*
     *Libraries used:
@@ -16,9 +17,8 @@ void receiveSerial()
     {
         u8x8.clear();
         u8x8.print(F("RECEIVING")); // the "F()" stuff around the string means we store the string in flash instead of SRAM
-        int16_t bytes;
 
-        bytes = macros.readFromSerial();
+        int16_t bytes = macros.readFromSerial();
         if (bytes == sizeof(MacroConfig))
         {
             macros.saveToEEPROM();
@@ -30,7 +30,6 @@ void receiveSerial()
         }
         else
         {
-            u8x8.clear();
             u8x8.print(F("ERROR "));
             u8x8.print(bytes);
             // roll back contents from eeprom
@@ -60,12 +59,10 @@ void setup()
 
     if (!macros.readFromEEPROM())
     {
-        u8x8.setCursor(0, 0);
         u8x8.print(F("NO MACRO CONFIG"));
     }
     else
     {
-        u8x8.setCursor(0, 0);
         u8x8.print(F("WELCOME"));
         uint8_t expanded = 0;
         if (expanded = macros.setupMacros())
@@ -77,6 +74,14 @@ void setup()
     }
     taskManager.scheduleOnce(5000, displayCurMode);
 
+    // uint8_t key[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    // char data[] = "0123456789012345"; // 16 chars == 16 bytes
+    // aes128_enc_single(key, data);
+    // Serial.print("encrypted:");
+    // Serial.println(data);
+    // aes128_dec_single(key, data);
+    // Serial.print("decrypted:");
+    // Serial.println(data);
 }
 
 void loop()

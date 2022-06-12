@@ -16,18 +16,18 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
 
     // !DEBUG
     // hold BTN1 to print config to serial
-    if (pin == BTN1_PIN && isHeld)
-    {
-        macros.dumpConfig();
-    }
-    else if (pin == BTN_ENC_PIN)
+    // if (pin == BTN1_PIN && isHeld)
+    // {
+    //     macros.dumpConfig();
+    // }
+    if (pin == BTN_ENC_PIN)
     {
         macros.passwordMode = !macros.passwordMode;
         if (macros.passwordMode && !macros.readRfid())
         {
             macros.passwordMode = false;
             u8x8.setCursor(0, 0);
-            u8x8.print(F("RFID AUTH FAILED"));
+            u8x8.print(F("RFID FAILED"));
             taskManager.scheduleOnce(5000, displayCurMode);
         }
         else
