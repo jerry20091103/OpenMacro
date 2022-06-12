@@ -63,7 +63,6 @@ uint8_t Macros::setupMacros()
 
 void Macros::runMacro(uint8_t input)
 {
-    runningMacro = true;
     if (passwordMode)
     {
         if (input > 8)
@@ -114,7 +113,6 @@ void Macros::runMacro(uint8_t input)
             }
         }
     }
-    runningMacro = false;
 }
 
 void Macros::clearConfig()

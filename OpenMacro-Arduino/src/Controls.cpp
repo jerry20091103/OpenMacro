@@ -1,5 +1,11 @@
 #include "Controls.h"
 #include "Macros.h"
+#include "ExecWithParameter.h"
+
+void runMacroTask(uint8_t input)
+{
+    macros.runMacro(input);
+}
 
 void BtnPressCallback(pinid_t pin, bool isHeld)
 {
@@ -29,7 +35,8 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     }
     else if (!isHeld)
     {
-        macros.runMacro(getInputPinNum(pin));
+        auto task = new ExecWithParameter<uint8_t>(runMacroTask, getInputPinNum(pin));
+        taskManager.scheduleOnce(0, task, TIME_MILLIS, true);
     }
 }
 

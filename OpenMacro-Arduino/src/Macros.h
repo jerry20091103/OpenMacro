@@ -22,7 +22,6 @@ public:
     bool checkExpanders();
     bool readRfid();
 
-    bool runningMacro = false;
     bool passwordMode = false;
     
 };

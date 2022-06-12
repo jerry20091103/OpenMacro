@@ -64,13 +64,10 @@ void receiveSerial()
 
 void readAnalog()
 {
-    if (!macros.runningMacro)
-    {
         // u8x8.setCursor(0, 38);
         // u8x8.print("             "); // overwrite old numbers
         // u8x8.setCursor(0, 38);
         // u8x8.print(String(analogRead(JOY_X)) + " " + String(analogRead(JOY_Y)));
-    }
 }
 
 void setup()
