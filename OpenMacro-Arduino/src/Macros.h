@@ -13,8 +13,8 @@ private:
 public:
     int16_t readFromSerial();
     bool sendToSerial();
-    void saveToEEPROM();
-    bool readFromEEPROM();
+    void saveToEEPROM(bool isPassword);
+    bool readFromEEPROM(bool isPassword);
     void clearConfig();
     void dumpConfig();
     void runMacro(uint8_t input);
@@ -23,7 +23,7 @@ public:
     bool readRfid();
 
     bool passwordMode = false;
-    uint8_t rfidUID[16] = {0xb0, 0x5c, 0x45, 0xa0};
+    uint8_t rfidUID[4] = {0xb0, 0x5c, 0x45, 0xa0};
 };
 
 void displayCurMode();

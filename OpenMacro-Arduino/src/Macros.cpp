@@ -1,6 +1,7 @@
 #include "Macros.h"
 #include "Hardware.h"
 #include "Controls.h"
+#include "AESLib.h"
 
 Macros macros;
 
@@ -14,25 +15,50 @@ bool Macros::sendToSerial()
     Serial.write((uint8_t *)&config, sizeof(config));
 }
 
-void Macros::saveToEEPROM()
+void Macros::saveToEEPROM(bool isPassword)
 {
     // first byte is used for valid flag
-    EEPROM.write(0, 1);
-    EEPROM.put(1, config);
+    EEPROM.update(0, 1);
+    if (isPassword)
+    {
+        EEPROM.put(sizeof(MacroConfig) + 2, config.passwordConfig);
+    }
+    else
+    {
+        EEPROM.put(1, config.macroConfig);
+    }
 }
 
-bool Macros::readFromEEPROM()
+bool Macros::readFromEEPROM(bool isPassword)
 {
     if (EEPROM.read(0) != 1)
     {
         return false;
     }
-    EEPROM.get(1, config);
+    if (isPassword)
+    {
+        EEPROM.get(sizeof(MacroConfig) + 2, config.passwordConfig);
+    }
+    else
+    {
+        EEPROM.get(1, config.macroConfig);
+    }
     return true;
 }
 
 uint8_t Macros::setupMacros()
 {
+    // !debug test passwords
+    uint8_t key[16];
+    for (uint8_t i = 0; i < 16; i++)
+    {
+        key[i] = rfidUID[i % 4];
+    }
+    strncpy(config.passwordConfig.passwords[0].str, "QwErTyUiOp", 16);
+    aes128_enc_single(key, config.passwordConfig.passwords[0].str);
+    saveToEEPROM(true);
+    readFromEEPROM(false);
+
     uint8_t expanded = 0;
     // setup expanders
     for (uint8_t i = 0; i < MAX_EXPANDERS; i++)
@@ -65,10 +91,20 @@ void Macros::runMacro(uint8_t input)
     {
         if (input > 8)
             return;
-        strcpy(config.passwordConfig.passwords[0].str, "qWeRtYuIoP");
-        Keyboard.print(config.passwordConfig.passwords[0].str);
+        char pswd[17];
+        uint8_t key[16];
+        readFromEEPROM(true);
+        for (uint8_t i = 0; i < 16; i++)
+        {
+            pswd[i] = config.passwordConfig.passwords[input].str[i];
+            key[i] = rfidUID[i % 4];
+        }
+        pswd[16] = '\0';
+        aes128_dec_single(key, pswd);
+        Keyboard.print(pswd);
         passwordMode = false;
         displayCurMode();
+        readFromEEPROM(false);
     }
     else
     {
@@ -88,9 +124,9 @@ void Macros::runMacro(uint8_t input)
                 // ! test mouse btn 0 !!!
                 // if (packet->mouseMove.mouseBtn != 0)
                 // {
-                    Mouse.press(packet->mouseMove.mouseBtn);
-                    Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
-                    Mouse.release(packet->mouseMove.mouseBtn);
+                Mouse.press(packet->mouseMove.mouseBtn);
+                Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
+                Mouse.release(packet->mouseMove.mouseBtn);
                 // }
                 // else
                 // {
@@ -171,23 +207,18 @@ void displayCurMode()
 bool Macros::readRfid()
 {
     oled.clear();
-    oled.print(F("RFID AUTH"));
+    oled.print(F("RFID KEY"));
     unsigned long time = millis();
-    while (!rfid.PICC_IsNewCardPresent() ||  !rfid.PICC_ReadCardSerial())
+    while (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial())
     {
-        if(millis() - time > 10000)
+        if (millis() - time > 10000)
         {
             return false;
         }
     }
-    Serial.print(F("RFID:"));
-    for (uint8_t i = 0; i < rfid.uid.size; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
-        Serial.print(rfid.uid.uidByte[i], HEX);
-        Serial.print(" ");
-
-        if (rfid.uid.uidByte[i] != rfidUID[i])
-            return false;
+        rfidUID[i] = rfid.uid.uidByte[i];
     }
     return true;
 }

@@ -38,7 +38,7 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     else if (!isHeld)
     {
         auto task = new ExecWithParameter<uint8_t>(runMacroTask, getInputPinNum(pin));
-        taskManager.scheduleOnce(1, task, TIME_MILLIS, true);
+        taskManager.scheduleOnce(0, task, TIME_MILLIS, true);
     }
 }
 
