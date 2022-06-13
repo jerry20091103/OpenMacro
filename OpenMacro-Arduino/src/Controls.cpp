@@ -27,7 +27,7 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
         {
             macros.passwordMode = false;
             oled.setCol(0);
-            oled.print(F("RFID FAILED"));
+            oled.print(F("RFID\nTIMEOUT"));
             taskManager.scheduleOnce(5000, displayCurMode);
         }
         else
@@ -38,22 +38,22 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     else if (!isHeld)
     {
         auto task = new ExecWithParameter<uint8_t>(runMacroTask, getInputPinNum(pin));
-        taskManager.scheduleOnce(0, task, TIME_MILLIS, true);
+        taskManager.execute(task, true);
     }
 }
 
 void EncCallback(int value)
 {
     // Serial.print(F("Encoder:"));
-    // Serial.print(value);
+    // Serial.println(value);
 
     if (value > 0)
     {
-        macros.runMacro(ENC_INC);
+        macros.runMacro(ENC_DEC);
     }
     else if (value < 0)
     {
-        macros.runMacro(ENC_DEC);
+        macros.runMacro(ENC_INC);
     }
 }
 

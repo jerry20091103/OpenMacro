@@ -49,15 +49,14 @@ bool Macros::readFromEEPROM(bool isPassword)
 uint8_t Macros::setupMacros()
 {
     // !debug test passwords
-    uint8_t key[16];
-    for (uint8_t i = 0; i < 16; i++)
-    {
-        key[i] = rfidUID[i % 4];
-    }
-    strncpy(config.passwordConfig.passwords[0].str, "QwErTyUiOp", 16);
-    aes128_enc_single(key, config.passwordConfig.passwords[0].str);
-    saveToEEPROM(true);
-    readFromEEPROM(false);
+    // uint8_t key[16];
+    // for (uint8_t i = 0; i < 16; i++)
+    // {
+    //     key[i] = rfidUID[i % 4];
+    // }
+    // aes128_enc_single(key, config.passwordConfig.passwords[0].str);
+    // saveToEEPROM(true);
+    // readFromEEPROM(false);
 
     uint8_t expanded = 0;
     // setup expanders
@@ -135,12 +134,18 @@ void Macros::runMacro(uint8_t input)
             }
             else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {
-                Keyboard.write((KeyboardKeycode)packet->keycode);
+                if(packet->keycode == KEY_VOLUME_MUTE)
+                    Consumer.write(MEDIA_VOLUME_MUTE);
+                else if (packet->keycode == KEY_VOLUME_UP)
+                    Consumer.write(MEDIA_VOLUME_UP);
+                else if (packet->keycode == KEY_VOLUME_DOWN)
+                    Consumer.write(MEDIA_VOLUME_DOWN);
+                else
+                    Keyboard.write((KeyboardKeycode)packet->keycode);
             }
 
             // release modifier
             Keyboard.release((KeyboardKeycode)packet->modifierCode);
-            Keyboard.flush();
             if (delay > 0 && i != config.macroConfig.inputs[input].size - 1)
             {
                 taskManager.yieldForMicros(1000000 * delay);
@@ -200,14 +205,14 @@ void displayCurMode()
     }
     else
     {
-        oled.print(F("MACRO MODE"));
+        oled.print(F("MACRO@MODE"));
     }
 }
 
 bool Macros::readRfid()
 {
     oled.clear();
-    oled.print(F("RFID KEY"));
+    oled.print(F("RFID@KEY"));
     unsigned long time = millis();
     while (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial())
     {

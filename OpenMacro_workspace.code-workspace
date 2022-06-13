@@ -19,7 +19,10 @@
 			"xutility": "cpp",
 			"iosfwd": "cpp",
 			"stdexcept": "cpp",
-			"functional": "cpp"
+			"functional": "cpp",
+			"deque": "cpp",
+			"regex": "cpp",
+			"xtree": "cpp"
 		}
 	}
 }

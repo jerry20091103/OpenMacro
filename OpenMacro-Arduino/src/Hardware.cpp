@@ -42,7 +42,7 @@ void HardwareSetup()
 
     //* setup display
     oled.begin(&Adafruit128x64, DISPLAY_ADD);
-    oled.setFont(Adafruit5x7);
+    oled.setFont(font5x7_u); // this is a custom font with only numbbers and UPPER case characters, use "@" for space
     oled.set2X();
     oled.clear();
 
@@ -54,4 +54,5 @@ void HardwareSetup()
     Keyboard.begin();
     Mouse.begin();
     Gamepad.begin();
+    Consumer.begin();
 }

@@ -25,12 +25,11 @@ void receiveSerial_readAnalog()
             oled.setCol(0);
             oled.print(F("MACRO\nRECEIVED"));
             // open 1200 magic baud to let GUI force reset
-            Serial.end();
             Serial.begin(1200);
         }
         else
         {
-            oled.print(F("ERROR "));
+            oled.print(F("ERROR@")); // the "@" here means space, cause we are using custom font to save space
             oled.print(bytes);
             // roll back contents from eeprom
             if (!macros.readFromEEPROM(false))
@@ -41,8 +40,8 @@ void receiveSerial_readAnalog()
         taskManager.scheduleOnce(5000, displayCurMode);
     }
 
-    Gamepad.xAxis(map(analogRead(JOY_X), 0, 1024, INT16_MIN, INT16_MAX));
-    Gamepad.yAxis(map(analogRead(JOY_Y), 0, 1024, INT16_MIN, INT16_MAX));
+    Gamepad.xAxis(map(analogRead(JOY_X), 1024, 0, INT16_MIN, INT16_MAX));
+    Gamepad.yAxis(map(analogRead(JOY_Y), 1024, 0, INT16_MIN, INT16_MAX));
     Gamepad.write();
 }
 
@@ -55,7 +54,7 @@ void setup()
 
     if (!macros.readFromEEPROM(false))
     {
-        oled.print(F("NO MACRO\nCONFIG"));
+        oled.print(F("NO@MACRO"));
     }
     else
     {
@@ -65,7 +64,7 @@ void setup()
         {
             oled.setCursor(0, 3);
             oled.print(String(expanded));
-            oled.print(F(" Expander"));
+            oled.print(F("@EXPANDER"));
         }
     }
     taskManager.scheduleOnce(5000, displayCurMode);
