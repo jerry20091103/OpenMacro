@@ -19,16 +19,26 @@ void receiveSerial_readAnalog()
         oled.print(F("RECEIVING")); // the "F()" stuff around the string means we store the string in flash instead of SRAM
 
         int16_t bytes = macros.readFromSerial();
-        if (bytes == sizeof(MacroConfig))
+        if (bytes == sizeof(Config))
         {
-            macros.saveToEEPROM(false);
-            oled.setCol(0);
-            oled.print(F("MACRO\nRECEIVED"));
+            if (macros.config.isPassword)
+            {
+                macros.saveToEEPROM(true);
+                oled.setCol(0);
+                oled.print(F("PASSWORD\nRECEIVED"));
+            }
+            else
+            {
+                macros.saveToEEPROM(false);
+                oled.setCol(0);
+                oled.print(F("MACRO\nRECEIVED"));
+            }
             // open 1200 magic baud to let GUI force reset
             Serial.begin(1200);
         }
         else
         {
+            oled.setCol(0);
             oled.print(F("ERROR@")); // the "@" here means space, cause we are using custom font to save space
             oled.print(bytes);
             // roll back contents from eeprom
@@ -63,7 +73,7 @@ void setup()
         if (expanded = macros.setupMacros())
         {
             oled.setCursor(0, 3);
-            oled.print(String(expanded));
+            oled.print(expanded);
             oled.print(F("@EXPANDER"));
         }
     }

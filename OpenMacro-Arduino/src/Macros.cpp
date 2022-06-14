@@ -7,12 +7,12 @@ Macros macros;
 
 int16_t Macros::readFromSerial()
 {
-    return Serial.readBytes((uint8_t *)&config.macroConfig, sizeof(MacroConfig));
+    return Serial.readBytes((uint8_t *)&config, sizeof(Config));
 }
 
 bool Macros::sendToSerial()
 {
-    Serial.write((uint8_t *)&config, sizeof(config));
+    Serial.write((uint8_t *)&config, sizeof(Config));
 }
 
 void Macros::saveToEEPROM(bool isPassword)
@@ -91,7 +91,7 @@ void Macros::runMacro(uint8_t input)
         if (input > 8)
             return;
         char pswd[17];
-        uint8_t key[16];
+        uint8_t key[17];
         readFromEEPROM(true);
         for (uint8_t i = 0; i < 16; i++)
         {
@@ -99,7 +99,8 @@ void Macros::runMacro(uint8_t input)
             key[i] = rfidUID[i % 4];
         }
         pswd[16] = '\0';
-        aes128_dec_single(key, pswd);
+        key[16] = '\0';
+        //aes128_dec_single(key, pswd);
         Keyboard.print(pswd);
         passwordMode = false;
         displayCurMode();

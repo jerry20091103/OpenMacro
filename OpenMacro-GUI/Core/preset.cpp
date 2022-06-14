@@ -171,7 +171,7 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
     if(serialPort.isOpen()){
         MacroConfig data;
         int bytesRead = serialPort.read((char*)&data, sizeof(MacroConfig));
-        if(!serialPort.waitForReadyRead(30000)){
+        if(!serialPort.waitForReadyRead(5000)){
             qDebug() << "Bytes read:" << bytesRead;
             throw "Error: " + serialPort.errorString();
         }

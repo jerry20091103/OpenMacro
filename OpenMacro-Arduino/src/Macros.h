@@ -7,7 +7,6 @@
 class Macros
 {
 private:
-    Config config;
     
     
 public:
@@ -22,6 +21,7 @@ public:
     bool checkExpanders();
     bool readRfid();
 
+    Config config;
     bool passwordMode = false;
     uint8_t rfidUID[4] = {0xb0, 0x5c, 0x45, 0xa0};
 };

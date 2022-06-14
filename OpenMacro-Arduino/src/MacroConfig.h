@@ -41,7 +41,7 @@ enum ButtonInputs : uint8_t
 
 struct MacroPassword
 {
-    uint16_t size;
+    uint8_t size;
     char str[MAX_PASSWORD_LEN];
 };
 
@@ -98,7 +98,7 @@ struct PasswordConfig
     MacroPassword passwords[MAX_PASSWORDS];
 };
 
-struct Config
+struct __attribute__ ((packed)) Config
 {
     uint8_t isPassword;
     // 0 -> macro, other -> password

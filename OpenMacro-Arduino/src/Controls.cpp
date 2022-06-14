@@ -20,7 +20,23 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     // {
     //     macros.dumpConfig();
     // }
-    if (pin == BTN_ENC_PIN)
+    if (pin == BTN_ENC_PIN && isHeld)
+    {
+        oled.clear();
+        oled.print(F("UPLOAD\nMACRO"));
+        macros.sendToSerial();
+        taskManager.scheduleOnce(5000, displayCurMode);
+    }
+    else if (!isHeld)
+    {
+        auto task = new ExecWithParameter<uint8_t>(runMacroTask, getInputPinNum(pin));
+        taskManager.execute(task, true);
+    }
+}
+
+void BtnReleaseCallback(pinid_t pin, bool isHeld)
+{
+    if(pin == BTN_ENC_PIN && !isHeld)
     {
         macros.passwordMode = !macros.passwordMode;
         if (macros.passwordMode && !macros.readRfid())
@@ -34,11 +50,6 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
         {
             displayCurMode();
         }
-    }
-    else if (!isHeld)
-    {
-        auto task = new ExecWithParameter<uint8_t>(runMacroTask, getInputPinNum(pin));
-        taskManager.execute(task, true);
     }
 }
 

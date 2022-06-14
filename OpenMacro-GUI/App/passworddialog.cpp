@@ -54,8 +54,10 @@ PasswordDialog::PasswordDialog(QWidget *parent, PresetDialog *presetDialog) :
                     qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
                     throw "Error: " + serialPort.errorString();
                 }
+                qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
             }
             else throw "Port " + serialPort.portName() + " is not open or writable.";
+            serialPort.close();
             // wait for Arduino to save macro
             QThread::msleep(1000);
             // open port with 1200 "magic baud" to force reset Arduino
