@@ -169,36 +169,41 @@ void Preset::saveAs(QString fileName) const
 void Preset::loadFromSerial(QSerialPort& serialPort)
 {
     if(serialPort.isOpen()){
-        MacroConfig data;
-        serialPort.waitForReadyRead(10000);
-        int bytesRead = serialPort.read((char*)&data, sizeof(MacroConfig));
-//        if(!serialPort.waitForReadyRead(10000)){
-//            qDebug() << "Bytes read:" << bytesRead;
-//            throw "Error: " + serialPort.errorString();
-//        }
-        qDebug() << "Bytes read:" << bytesRead;
-        if(bytesRead != sizeof(MacroConfig)) throw "Download failed. Did not read in correct number of bytes.";
-        memcpy(expanderAddr, data.expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
-        // Clear any existing inputs to prevent accidents.
-        inputs.clear();
-        for(int idx = 0; idx < data.numInputs; ++idx){
-            Input input;
-            MacroAction action = data.inputs[idx];
-            input.delay = action.delay;
-            // We write MacroPackets one by one here to be on the safe side.
-            for(int jdx = 0; jdx < action.size; ++jdx){
-                MacroPacket packet;
-                std::memcpy(&packet, // write to packet struct
-                            data.commandBuffer + action.data + jdx * sizeof(MacroPacket), // start of packet
-                            sizeof(MacroPacket)); // size is just the MacroPacket size
-                input.packets.push_back(packet);
+        readyReadConn = serialPort.connect(&serialPort, &QSerialPort::readyRead, [&](){
+            QObject::disconnect(readyReadConn);
+            MacroConfig data;
+
+            int bytesRead = serialPort.read((char*)&data, sizeof(MacroConfig));
+    //        if(!serialPort.waitForReadyRead(10000)){
+    //            qDebug() << "Bytes read:" << bytesRead;
+    //            throw "Error: " + serialPort.errorString();
+    //        }
+            qDebug() << "Bytes read:" << bytesRead;
+            if(bytesRead != sizeof(MacroConfig)) throw "Download failed. Did not read in correct number of bytes.";
+            memcpy(expanderAddr, data.expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
+            // Clear any existing inputs to prevent accidents.
+            inputs.clear();
+            for(int idx = 0; idx < data.numInputs; ++idx){
+                Input input;
+                MacroAction action = data.inputs[idx];
+                input.delay = action.delay;
+                // We write MacroPackets one by one here to be on the safe side.
+                for(int jdx = 0; jdx < action.size; ++jdx){
+                    MacroPacket packet;
+                    std::memcpy(&packet, // write to packet struct
+                                data.commandBuffer + action.data + jdx * sizeof(MacroPacket), // start of packet
+                                sizeof(MacroPacket)); // size is just the MacroPacket size
+                    input.packets.push_back(packet);
+                }
+                inputs.push_back(input);
             }
-            inputs.push_back(input);
-        }
 
 
+        });
     }
     else throw "Port " + serialPort.portName() + " is not open.";
+
+
 }
 
 void Preset::uploadToSerial(QSerialPort& serialPort)
@@ -229,20 +234,11 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
         }
-
-        bytesWrittenConn = serialPort.connect(&serialPort, &QSerialPort::bytesWritten, [&](qint64 bytes){
-            qDebug() << "Wrote " << bytes << " to" << serialPort.portName();
-            serialPort.disconnect(SIGNAL(bytesWritten), &serialPort);
-            QObject::disconnect(bytesWrittenConn);
-            QObject::disconnect(errorConn);
-        });
-        errorConn = serialPort.connect(&serialPort, &QSerialPort::errorOccurred, [&](QSerialPort::SerialPortError error){
+        if(!serialPort.waitForBytesWritten(5000)){
+            qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
             throw "Error: " + serialPort.errorString();
-            QObject::disconnect(bytesWrittenConn);
-            QObject::disconnect(errorConn);
-        });
-
+        }
+        qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
     }
     else throw "Port " + serialPort.portName() + " is not open or writable.";
-
 }
