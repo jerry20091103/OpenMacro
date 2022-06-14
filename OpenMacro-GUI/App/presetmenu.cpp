@@ -139,7 +139,9 @@ void PresetMenu::downloadPreset(QSerialPort& serialPort)
 {
     activePreset.loadFromSerial(serialPort);
     activeFileName = serialPort.portName() + ".json";
+    saveAction->setEnabled(true);
     setDirty(true);
+    this->inputList->onNewPreset(activePreset);
 }
 
 void PresetMenu::uploadPreset(QSerialPort& serialPort)
