@@ -10,8 +10,8 @@ private:
     
     
 public:
-    int16_t readFromSerial();
-    int16_t sendToSerial();
+    bool readFromSerial();
+    bool sendToSerial();
     void saveToEEPROM(bool isPassword);
     bool readFromEEPROM(bool isPassword);
     void clearConfig();

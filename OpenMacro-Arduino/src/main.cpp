@@ -18,8 +18,7 @@ void receiveSerial_readAnalog()
         oled.clear();
         oled.print(F("RECEIVING")); // the "F()" stuff around the string means we store the string in flash instead of SRAM
 
-        int16_t bytes = macros.readFromSerial();
-        if (bytes == sizeof(Config))
+        if (macros.readFromSerial())
         {
             if (macros.config.isPassword)
             {
@@ -38,9 +37,8 @@ void receiveSerial_readAnalog()
         }
         else
         {
-            oled.setCol(0);
-            oled.print(F("ERROR@")); // the "@" here means space, cause we are using custom font to save space
-            oled.print(bytes);
+            oled.clear();
+            oled.print(F("ERROR")); // the "@" here means space, cause we are using custom font to save space
             // roll back contents from eeprom
             if (!macros.readFromEEPROM(false))
             {
