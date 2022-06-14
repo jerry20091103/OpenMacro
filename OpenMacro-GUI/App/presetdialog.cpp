@@ -71,6 +71,7 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     // [Download button callback]
     connect(ui->downloadButton, &QPushButton::clicked, this, [&](bool checked){
         qDebug() << "Download";
+        QMessageBox::information(this, "Downloading", "Please hold down the encoder button on the macro device.", QMessageBox::Ok);
         EXCEPT_ALERT(
             auto openMode = QIODeviceBase::OpenMode();
             openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
@@ -86,7 +87,9 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
             serialPort.open(openMode);
             this->presetMenu->downloadPreset(serialPort);
             serialPort.close();
+            this->close();
         );
+
     });
 
 }
