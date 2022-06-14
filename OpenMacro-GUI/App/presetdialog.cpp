@@ -138,6 +138,8 @@ void PresetDialog::refreshPortList()
     // Check if port list has changed. If not, do not refresh list.
     bool isDifferent = false;
     foreach(const QSerialPortInfo& port, availablePorts){
+        if (port.description() != "Arduino Micro")
+            continue;
         if(availablePortNames.find(port.portName()) == availablePortNames.end()) {
             isDifferent = true;
         }
@@ -147,8 +149,10 @@ void PresetDialog::refreshPortList()
     ui->portList->clear();
     qDebug() << "Number of available ports: " << availablePorts.size();
     foreach(const QSerialPortInfo& port, availablePorts){
-        ui->portList->addItem(port.portName());
-        availablePortNames.insert(port.portName());
+        if (port.description() != "Arduino Micro")
+            continue;
+        ui->portList->addItem(port.portName() + "-" + port.description());
+        availablePortNames.insert(port.portName() + "-" + port.description());
     }
 }
 

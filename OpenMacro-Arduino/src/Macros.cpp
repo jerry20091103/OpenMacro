@@ -5,14 +5,14 @@
 
 Macros macros;
 
-int16_t Macros::readFromSerial()
+bool Macros::readFromSerial()
 {
-    return Serial.readBytes((uint8_t *)&config, sizeof(Config));
+    return (Serial.readBytes((uint8_t *)&config, sizeof(Config)) == sizeof(Config));
 }
 
-int16_t Macros::sendToSerial()
+bool Macros::sendToSerial()
 {
-    return Serial.write((uint8_t *)&config.macroConfig, sizeof(MacroConfig));
+    return (Serial.write((uint8_t *)&config.macroConfig, sizeof(MacroConfig)) == sizeof(MacroConfig));
 }
 
 void Macros::saveToEEPROM(bool isPassword)
@@ -48,16 +48,6 @@ bool Macros::readFromEEPROM(bool isPassword)
 
 uint8_t Macros::setupMacros()
 {
-    // !debug test passwords
-    // uint8_t key[16];
-    // for (uint8_t i = 0; i < 16; i++)
-    // {
-    //     key[i] = rfidUID[i % 4];
-    // }
-    // aes128_enc_single(key, config.passwordConfig.passwords[0].str);
-    // saveToEEPROM(true);
-    // readFromEEPROM(false);
-
     uint8_t expanded = 0;
     // setup expanders
     for (uint8_t i = 0; i < MAX_EXPANDERS; i++)
