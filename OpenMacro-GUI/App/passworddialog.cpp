@@ -80,3 +80,10 @@ PasswordDialog::~PasswordDialog()
 {
     delete ui;
 }
+
+void PasswordDialog::closeEvent(QCloseEvent *event)
+{
+    for(int i = 0; i < MAX_PASSWORDS; ++i){
+        this->pwSlots[i]->clear();
+    }
+}

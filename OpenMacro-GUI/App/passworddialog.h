@@ -23,6 +23,7 @@ public:
 private:
     Ui::PasswordDialog *ui;
     QLineEdit* pwSlots[MAX_PASSWORDS];
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // PASSWORDDIALOG_H
