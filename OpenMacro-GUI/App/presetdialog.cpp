@@ -71,7 +71,7 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     });
     // [Download button callback]
     connect(ui->downloadButton, &QPushButton::clicked, this, [&](bool checked){
-        if(readDelayTimerId == -1) return;
+        if(readDelayTimerId != -1) return;
         qDebug() << "Download";
         msgBox = new QMessageBox(this);
         msgBox->setIcon(QMessageBox::Information);
@@ -126,7 +126,7 @@ void PresetDialog::closeEvent(QCloseEvent *event)
 void PresetDialog::timerEvent(QTimerEvent *event)
 {
     qDebug() << "Timer event";
-    if(readDelayTimerId != -1){
+    if(event->timerId() == readDelayTimerId){
         QCoreApplication::instance()->eventDispatcher()->unregisterTimer(readDelayTimerId);
         readDelayTimerId = -1;
         EXCEPT_ALERT(
@@ -148,8 +148,10 @@ void PresetDialog::timerEvent(QTimerEvent *event)
             this->close();
         );
     }
-    refreshPortList();
-    refreshState();
+    else{
+        refreshPortList();
+        refreshState();
+    }
 }
 
 void PresetDialog::setStatus(const QString &text)
