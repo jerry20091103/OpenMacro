@@ -1,10 +1,12 @@
 #include "passworddialog.h"
 #include "ui_passworddialog.h"
 #include <QThread>
+#include <QRegularExpression>
 
 PasswordDialog::PasswordDialog(QWidget *parent, PresetDialog *presetDialog) :
     QDialog(parent),
-    ui(new Ui::PasswordDialog)
+    ui(new Ui::PasswordDialog),
+    passwordValidator(QRegularExpression("[A-Za-z0-9_]+"), this)
 {
     ui->setupUi(this);
     this->pwSlots[0] = ui->pwSlot1;
@@ -16,15 +18,17 @@ PasswordDialog::PasswordDialog(QWidget *parent, PresetDialog *presetDialog) :
     this->pwSlots[6] = ui->pwSlot7;
     this->pwSlots[7] = ui->pwSlot8;
     this->pwSlots[8] = ui->pwSlot9;
-    for(int i = 0; i < MAX_PASSWORDS; ++i)
+    for(int i = 0; i < MAX_PASSWORDS; ++i){
         this->pwSlots[i]->setMaxLength(MAX_PASSWORD_LEN);
+        this->pwSlots[i]->setValidator(&passwordValidator);
+    }
     connect(ui->pwConfirm, &QPushButton::clicked, this, [this, presetDialog](bool checked) {
         Config config;
         config.isPassword = true;
         PasswordConfig& pwConfig = config.passwordConfig;
         for(int i = 0; i < MAX_PASSWORDS; ++i){
             pwConfig.passwords[i].size = this->pwSlots[i]->text().length();
-            memcpy(pwConfig.passwords[i].str, this->pwSlots[i]->text().data(), pwConfig.passwords[i].size);
+            memcpy(pwConfig.passwords[i].str, this->pwSlots[i]->text().toStdString().c_str(), pwConfig.passwords[i].size * sizeof(char));
         }
         QSerialPort& serialPort = presetDialog->getSerialPort();
 

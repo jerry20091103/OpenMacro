@@ -15,7 +15,7 @@ class PasswordDialog;
 class PasswordDialog : public QDialog
 {
     Q_OBJECT
-
+    QRegularExpressionValidator passwordValidator;
 public:
     explicit PasswordDialog(QWidget *parent = nullptr, PresetDialog *presetDialog = nullptr);
     ~PasswordDialog();
