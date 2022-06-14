@@ -118,6 +118,17 @@ void PresetDialog::closeEvent(QCloseEvent *event)
     if(readDelayTimerId != -1){
         QCoreApplication::instance()->eventDispatcher()->unregisterTimer(readDelayTimerId);
         readDelayTimerId = -1;
+    }
+    passwordDialog->close();
+//    if(serialPort.isOpen()) serialPort.close();
+}
+
+void PresetDialog::timerEvent(QTimerEvent *event)
+{
+    qDebug() << "Timer event";
+    if(readDelayTimerId != -1){
+        QCoreApplication::instance()->eventDispatcher()->unregisterTimer(readDelayTimerId);
+        readDelayTimerId = -1;
         EXCEPT_ALERT(
             auto openMode = QIODeviceBase::OpenMode();
             openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
@@ -137,13 +148,6 @@ void PresetDialog::closeEvent(QCloseEvent *event)
             this->close();
         );
     }
-    passwordDialog->close();
-//    if(serialPort.isOpen()) serialPort.close();
-}
-
-void PresetDialog::timerEvent(QTimerEvent *event)
-{
-    qDebug() << "Timer event";
     refreshPortList();
     refreshState();
 }
