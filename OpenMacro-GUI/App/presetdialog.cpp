@@ -71,32 +71,16 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
     });
     // [Download button callback]
     connect(ui->downloadButton, &QPushButton::clicked, this, [&](bool checked){
+        if(readDelayTimerId == -1) return;
         qDebug() << "Download";
-        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox = new QMessageBox(this);
         msgBox->setIcon(QMessageBox::Information);
         msgBox->setWindowTitle("Downloading");
         msgBox->setInformativeText("Please hold down the encoder button on the macro device.");
         msgBox->setAttribute((Qt::WA_DeleteOnClose));
         msgBox->setModal(false);
         msgBox->show();
-        EXCEPT_ALERT(
-            auto openMode = QIODeviceBase::OpenMode();
-            openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
-            // somehow, these are required to successfully communicate with arduino micro.
-            serialPort.open(openMode);
-            serialPort.setBaudRate(QSerialPort::Baud9600);
-            serialPort.setDataBits(QSerialPort::Data8);
-            serialPort.setParity(QSerialPort::NoParity);
-            serialPort.setStopBits(QSerialPort::OneStop);
-            serialPort.setFlowControl(QSerialPort::HardwareControl);
-            serialPort.close();
-
-            serialPort.open(openMode);
-            this->presetMenu->downloadPreset(serialPort);
-            serialPort.close();
-            this->close();
-        );
-        msgBox->close();
+        readDelayTimerId = QCoreApplication::instance()->eventDispatcher()->registerTimer(1, Qt::TimerType::CoarseTimer, this);
 
     });
 
@@ -115,7 +99,7 @@ QSerialPort &PresetDialog::getSerialPort()
 void PresetDialog::showEvent(QShowEvent *event)
 {
     qDebug() << "Show event";
-    timerId = QCoreApplication::instance()->eventDispatcher()->registerTimer(1000, Qt::TimerType::CoarseTimer, this);
+    refreshTimerId = QCoreApplication::instance()->eventDispatcher()->registerTimer(1000, Qt::TimerType::CoarseTimer, this);
     refreshPortList();
     refreshState();
 }
@@ -123,7 +107,36 @@ void PresetDialog::showEvent(QShowEvent *event)
 void PresetDialog::closeEvent(QCloseEvent *event)
 {
     qDebug() << "Close event";
-    QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
+    if(refreshTimerId != -1){
+        QCoreApplication::instance()->eventDispatcher()->unregisterTimer(refreshTimerId);
+        refreshTimerId = -1;
+    }
+    if(writeDelayTimerId != -1){
+        QCoreApplication::instance()->eventDispatcher()->unregisterTimer(writeDelayTimerId);
+        writeDelayTimerId = -1;
+    }
+    if(readDelayTimerId != -1){
+        QCoreApplication::instance()->eventDispatcher()->unregisterTimer(readDelayTimerId);
+        readDelayTimerId = -1;
+        EXCEPT_ALERT(
+            auto openMode = QIODeviceBase::OpenMode();
+            openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
+            // somehow, these are required to successfully communicate with arduino micro.
+            serialPort.open(openMode);
+            serialPort.setBaudRate(QSerialPort::Baud9600);
+            serialPort.setDataBits(QSerialPort::Data8);
+            serialPort.setParity(QSerialPort::NoParity);
+            serialPort.setStopBits(QSerialPort::OneStop);
+            serialPort.setFlowControl(QSerialPort::HardwareControl);
+            serialPort.close();
+
+            serialPort.open(openMode);
+            this->presetMenu->downloadPreset(serialPort);
+            serialPort.close();
+            msgBox->close();
+            this->close();
+        );
+    }
     passwordDialog->close();
 //    if(serialPort.isOpen()) serialPort.close();
 }

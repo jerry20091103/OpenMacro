@@ -20,6 +20,7 @@ class PresetDialog : public QDialog
     QSerialPort serialPort;
     PresetMenu* presetMenu;
     PasswordDialog* passwordDialog;
+    QMessageBox* msgBox;
 public:
     PresetDialog(QWidget *parent = nullptr, PresetMenu* presetMenu = nullptr);
     ~PresetDialog();
@@ -32,7 +33,7 @@ private:
     void refreshPortList();
     void refreshState();
     Ui::PresetDialog *ui;
-    int timerId = -1;
+    int refreshTimerId = -1, writeDelayTimerId = -1, readDelayTimerId = -1;
     std::unordered_set<QString> availablePortNames;
 };
 
