@@ -11,7 +11,7 @@ private:
     
 public:
     int16_t readFromSerial();
-    bool sendToSerial();
+    int16_t sendToSerial();
     void saveToEEPROM(bool isPassword);
     bool readFromEEPROM(bool isPassword);
     void clearConfig();

@@ -24,10 +24,12 @@ void BtnPressCallback(pinid_t pin, bool isHeld)
     {
         oled.clear();
         oled.print(F("UPLOAD\nMACRO"));
-        if(!macros.sendToSerial())
+        int16_t bytes = macros.sendToSerial();
+        if(bytes != sizeof(MacroConfig))
         {
             oled.clear();
-            oled.print(F("UPLOAD\nERROR"));
+            oled.print(F("ERROR@"));
+            oled.print(bytes);
         }
         taskManager.scheduleOnce(5000, displayCurMode);
     }

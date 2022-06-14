@@ -73,9 +73,9 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
         qDebug() << "Download";
         EXCEPT_ALERT(
             auto openMode = QIODeviceBase::OpenMode();
+            openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
             // somehow, these are required to successfully communicate with arduino micro.
             serialPort.open(openMode);
-            openMode.setFlag(QIODeviceBase::OpenModeFlag::ReadWrite);
             serialPort.setBaudRate(QSerialPort::Baud9600);
             serialPort.setDataBits(QSerialPort::Data8);
             serialPort.setParity(QSerialPort::NoParity);

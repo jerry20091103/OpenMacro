@@ -10,13 +10,9 @@ int16_t Macros::readFromSerial()
     return Serial.readBytes((uint8_t *)&config, sizeof(Config));
 }
 
-bool Macros::sendToSerial()
+int16_t Macros::sendToSerial()
 {
-    if (Serial && (Serial.write((uint8_t *)&config.macroConfig, sizeof(MacroConfig)) == sizeof(MacroConfig)))
-    {
-        return true;
-    }
-    return false;
+    return Serial.write((uint8_t *)&config.macroConfig, sizeof(MacroConfig));
 }
 
 void Macros::saveToEEPROM(bool isPassword)
