@@ -158,8 +158,8 @@ void PresetDialog::refreshPortList()
     foreach(const QSerialPortInfo& port, availablePorts){
         if (port.description() != "Arduino Micro")
             continue;
-        ui->portList->addItem(port.portName() + "-" + port.description());
-        availablePortNames.insert(port.portName() + "-" + port.description());
+        ui->portList->addItem(port.portName());
+        availablePortNames.insert(port.portName());
     }
 }
 
