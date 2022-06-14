@@ -177,6 +177,7 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
 //            throw "Error: " + serialPort.errorString();
 //        }
         qDebug() << "Bytes read:" << bytesRead;
+        if(bytesRead != sizeof(MacroConfig)) throw "Download failed. Did not read in correct number of bytes.";
         memcpy(expanderAddr, data.expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
         // Clear any existing inputs to prevent accidents.
         inputs.clear();
