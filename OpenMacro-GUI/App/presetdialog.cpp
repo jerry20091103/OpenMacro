@@ -2,6 +2,7 @@
 #include <QAbstractEventDispatcher>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QTimer>
 #include "exceptionhandler.h"
 #include "presetdialog.h"
 #include "ui_presetdialog.h"

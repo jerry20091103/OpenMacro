@@ -17,6 +17,7 @@ public:
     MacroPassword passwords[MAX_PASSWORDS];
 private:
     std::vector<Input> inputs;
+    QMetaObject::Connection bytesWrittenConn, errorConn;
 public:
     Preset();
     /// Load the Preset object with JSON data from the given file.

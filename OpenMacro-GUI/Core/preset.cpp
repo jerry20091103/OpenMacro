@@ -229,11 +229,16 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();
         }
-        if(!serialPort.waitForBytesWritten(5000)){
-            qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
+
+        bytesWrittenConn = serialPort.connect(&serialPort, &QSerialPort::bytesWritten, [&](qint64 bytes){
+            qDebug() << "Wrote " << bytes << " to" << serialPort.portName();
+            serialPort.disconnect(SIGNAL(bytesWritten), &serialPort);
+            QObject::disconnect(bytesWrittenConn);
+        });
+        errorConn = serialPort.connect(&serialPort, &QSerialPort::errorOccurred, [&](QSerialPort::SerialPortError error){
             throw "Error: " + serialPort.errorString();
-        }
-        qDebug() << "Wrote " << bytesWritten << " to" << serialPort.portName();
+            QObject::disconnect(errorConn);
+        });
 
     }
     else throw "Port " + serialPort.portName() + " is not open or writable.";
