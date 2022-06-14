@@ -67,9 +67,10 @@ void ConfigMacroForm::injectDependencies(CommandList *commandList,
         if(!this->isEnabled()) return;
         qDebug() << "mouseButtonInput" << QString::number(newIndex);
         qDebug() << this->mouseButtonInput->itemText(newIndex);
-        qDebug() << "Mouse button code: " << (1 << newIndex);
-        SET_DIRTY_IF(this->commandList->getCurrentCommand().mouseMove.mouseBtn != (1 << newIndex));
-        this->commandList->getCurrentCommand().mouseMove.mouseBtn = (1 << newIndex);
+        uint8_t buttonCode = newIndex == 0 ? 0 : ((1 << (newIndex - 1)));
+        qDebug() << "Mouse button code: " << buttonCode;
+        SET_DIRTY_IF(this->commandList->getCurrentCommand().mouseMove.mouseBtn != buttonCode);
+        this->commandList->getCurrentCommand().mouseMove.mouseBtn = buttonCode;
     });
     connect(keyInput, &QComboBox::currentIndexChanged, this, [&](int newIndex){
         if(!this->isEnabled()) return;
@@ -104,7 +105,7 @@ void ConfigMacroForm::updateForm(const MacroPacket &packet)
     updateVisibility();
     switch(packet.mode){
         case MOUSE_MOVE:
-        this->mouseButtonInput->setCurrentIndex(std::log2(packet.mouseMove.mouseBtn));
+        this->mouseButtonInput->setCurrentIndex(packet.mouseMove.mouseBtn == 0 ? 0 : (std::log2(packet.mouseMove.mouseBtn) + 1));
         this->mouseScrollInput->setValue(packet.mouseMove.wheel);
         this->mouseXInput->setValue(packet.mouseMove.mouseX);
         this->mouseYInput->setValue(packet.mouseMove.mouseY);
@@ -139,6 +140,7 @@ void ConfigMacroForm::disable(){
 }
 
 void ConfigMacroForm::initMouseButtonInput(QComboBox* mouseButtonInput){
+    mouseButtonInput->addItem("NONE"); // 0 reserved for NONE, be careful
     mouseButtonInput->addItem("MOUSE_LEFT");
     mouseButtonInput->addItem("MOUSE_RIGHT");
     mouseButtonInput->addItem("MOUSE_MIDDLE");

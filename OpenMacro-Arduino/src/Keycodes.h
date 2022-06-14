@@ -9,6 +9,7 @@
 #define MOUSE_MIDDLE	(1 << 2)
 #define MOUSE_PREV		(1 << 3)
 #define MOUSE_NEXT		(1 << 4)
+#define MOUSE_NONE 0
 
 #ifdef QT
 #include <QObject>
