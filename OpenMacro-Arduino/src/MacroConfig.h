@@ -7,7 +7,7 @@
 #define MAX_PASSWORD_LEN 16
 #define MAX_EXPANDERS 2
 #define MAX_INPUTS (NUM_BTN_INPUTS + MAX_EXPANDERS * 16)
-#define COMMAND_BUF_SIZE 512
+#define COMMAND_BUF_SIZE 400
 
 #include <stdint.h>
 #include <string.h>
@@ -36,7 +36,7 @@ enum ButtonInputs : uint8_t
     // encoder turn
     ENC_INC,
     ENC_DEC
-    // encoder button is reserved for switching to password mode.
+    // encoder button is reserved for switching to password mode.16812345678910111213141516bbacdb
 };
 
 struct MacroPassword

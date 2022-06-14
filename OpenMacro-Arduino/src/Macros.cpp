@@ -81,16 +81,15 @@ void Macros::runMacro(uint8_t input)
         if (input > 8)
             return;
         char pswd[17];
-        uint8_t key[17];
+        uint8_t key[16];
         readFromEEPROM(true);
         for (uint8_t i = 0; i < 16; i++)
         {
             pswd[i] = config.passwordConfig.passwords[input].str[i];
             key[i] = rfidUID[i % 4];
         }
-        pswd[16] = '\0';
-        key[16] = '\0';
-        // aes128_dec_single(key, pswd);
+        aes128_dec_single(key, pswd);
+        pswd[config.passwordConfig.passwords[input].size] = '\0';
         Keyboard.print(pswd);
         passwordMode = false;
         displayCurMode();
@@ -111,17 +110,9 @@ void Macros::runMacro(uint8_t input)
 
             if (packet->mode == MOUSE_MOVE)
             {
-                // ! test mouse btn 0 !!!
-                // if (packet->mouseMove.mouseBtn != 0)
-                // {
                 Mouse.press(packet->mouseMove.mouseBtn);
                 Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
                 Mouse.release(packet->mouseMove.mouseBtn);
-                // }
-                // else
-                // {
-                //     Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
-                // }
             }
             else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {
@@ -139,7 +130,7 @@ void Macros::runMacro(uint8_t input)
             Keyboard.release((KeyboardKeycode)packet->modifierCode);
             if (delay > 0 && i != config.macroConfig.inputs[input].size - 1)
             {
-                taskManager.yieldForMicros(1000000 * delay);
+                taskManager.yieldForMicros(1000 * delay);
             }
         }
     }

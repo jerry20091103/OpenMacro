@@ -59,19 +59,19 @@ PasswordDialog::PasswordDialog(QWidget *parent, PresetDialog *presetDialog) :
             else throw "Port " + serialPort.portName() + " is not open or writable.";
             serialPort.close();
             // wait for Arduino to save macro
-            QThread::msleep(1000);
-            // open port with 1200 "magic baud" to force reset Arduino
-            if(serialPort.open(openMode))
-            {
-                serialPort.setBaudRate(QSerialPort::Baud1200);
-                serialPort.setDataBits(QSerialPort::Data8);
-                serialPort.setParity(QSerialPort::NoParity);
-                serialPort.setStopBits(QSerialPort::OneStop);
-                serialPort.setFlowControl(QSerialPort::HardwareControl);
-                serialPort.close();
-            }
-            else
-                qDebug() << "Failed to reset Arduino";
+//            QThread::msleep(1000);
+//            // open port with 1200 "magic baud" to force reset Arduino
+//            if(serialPort.open(openMode))
+//            {
+//                serialPort.setBaudRate(QSerialPort::Baud1200);
+//                serialPort.setDataBits(QSerialPort::Data8);
+//                serialPort.setParity(QSerialPort::NoParity);
+//                serialPort.setStopBits(QSerialPort::OneStop);
+//                serialPort.setFlowControl(QSerialPort::HardwareControl);
+//                serialPort.close();
+//            }
+//            else
+//                qDebug() << "Failed to reset Arduino";
         );
     });
 }

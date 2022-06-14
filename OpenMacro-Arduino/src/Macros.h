@@ -23,7 +23,7 @@ public:
 
     Config config;
     bool passwordMode = false;
-    uint8_t rfidUID[4] = {0xb0, 0x5c, 0x45, 0xa0};
+    uint8_t rfidUID[4];
 };
 
 void displayCurMode();
