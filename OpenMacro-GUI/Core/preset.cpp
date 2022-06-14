@@ -234,9 +234,11 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
             qDebug() << "Wrote " << bytes << " to" << serialPort.portName();
             serialPort.disconnect(SIGNAL(bytesWritten), &serialPort);
             QObject::disconnect(bytesWrittenConn);
+            QObject::disconnect(errorConn);
         });
         errorConn = serialPort.connect(&serialPort, &QSerialPort::errorOccurred, [&](QSerialPort::SerialPortError error){
             throw "Error: " + serialPort.errorString();
+            QObject::disconnect(bytesWrittenConn);
             QObject::disconnect(errorConn);
         });
 
