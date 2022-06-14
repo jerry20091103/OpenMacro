@@ -170,11 +170,12 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
 {
     if(serialPort.isOpen()){
         MacroConfig data;
+        serialPort.waitForReadyRead(10000);
         int bytesRead = serialPort.read((char*)&data, sizeof(MacroConfig));
-        if(!serialPort.waitForReadyRead(5000)){
-            qDebug() << "Bytes read:" << bytesRead;
-            throw "Error: " + serialPort.errorString();
-        }
+//        if(!serialPort.waitForReadyRead(10000)){
+//            qDebug() << "Bytes read:" << bytesRead;
+//            throw "Error: " + serialPort.errorString();
+//        }
         qDebug() << "Bytes read:" << bytesRead;
         memcpy(expanderAddr, data.expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
         // Clear any existing inputs to prevent accidents.

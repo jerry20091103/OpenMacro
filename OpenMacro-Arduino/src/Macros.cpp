@@ -12,7 +12,11 @@ int16_t Macros::readFromSerial()
 
 bool Macros::sendToSerial()
 {
-    Serial.write((uint8_t *)&config, sizeof(Config));
+    if (Serial && (Serial.write((uint8_t *)&config.macroConfig, sizeof(MacroConfig)) == sizeof(MacroConfig)))
+    {
+        return true;
+    }
+    return false;
 }
 
 void Macros::saveToEEPROM(bool isPassword)
@@ -100,7 +104,7 @@ void Macros::runMacro(uint8_t input)
         }
         pswd[16] = '\0';
         key[16] = '\0';
-        //aes128_dec_single(key, pswd);
+        // aes128_dec_single(key, pswd);
         Keyboard.print(pswd);
         passwordMode = false;
         displayCurMode();
@@ -135,7 +139,7 @@ void Macros::runMacro(uint8_t input)
             }
             else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {
-                if(packet->keycode == KEY_VOLUME_MUTE)
+                if (packet->keycode == KEY_VOLUME_MUTE)
                     Consumer.write(MEDIA_VOLUME_MUTE);
                 else if (packet->keycode == KEY_VOLUME_UP)
                     Consumer.write(MEDIA_VOLUME_UP);
