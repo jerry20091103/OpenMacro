@@ -5,7 +5,7 @@
 #include "exceptionhandler.h"
 #include "presetdialog.h"
 #include "ui_presetdialog.h"
-#include <Qthread>
+#include <QThread>
 
 PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
   : QDialog(parent)
@@ -15,6 +15,10 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
 {
     ui->setupUi(this);
     this->setWindowTitle("Connect to Device");
+    this->passwordDialog = new PasswordDialog(this, this);
+    connect(ui->passwordButton, &QPushButton::clicked, this, [&](bool checked){
+        passwordDialog->show();
+    });
     serialPort.setBaudRate(QSerialPort::Baud9600);
     serialPort.setDataBits(QSerialPort::Data8);
     serialPort.setParity(QSerialPort::NoParity);
@@ -80,7 +84,12 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
 
 PresetDialog::~PresetDialog()
 {
-//    if(serialPort.isOpen()) serialPort.close();
+    //    if(serialPort.isOpen()) serialPort.close();
+}
+
+QSerialPort &PresetDialog::getSerialPort()
+{
+    return serialPort;
 }
 
 void PresetDialog::showEvent(QShowEvent *event)
@@ -95,6 +104,7 @@ void PresetDialog::closeEvent(QCloseEvent *event)
 {
     qDebug() << "Close event";
     QCoreApplication::instance()->eventDispatcher()->unregisterTimer(timerId);
+    passwordDialog->close();
 //    if(serialPort.isOpen()) serialPort.close();
 }
 
@@ -134,14 +144,16 @@ void PresetDialog::refreshState()
 {
     if(ui->portList->count() > 0){
         setStatus("Port ready");
-        ui->uploadButton->setEnabled(true);
+        ui->uploadButton->setEnabled(presetMenu->hasActivePreset());
         ui->downloadButton->setEnabled(true);
         ui->portList->setEnabled(true);
+        ui->passwordButton->setEnabled(true);
     }
     else {
         setStatus("No port available");
         ui->uploadButton->setEnabled(false);
         ui->downloadButton->setEnabled(false);
         ui->portList->setEnabled(false);
+        ui->passwordButton->setEnabled(false);
     }
 }

@@ -5,20 +5,25 @@
 #include <QSerialPort>
 #include <unordered_set>
 #include "App/presetmenu.h"
+#include "App/passworddialog.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class PresetDialog;
 }
 QT_END_NAMESPACE
 
+class PasswordDialog;
+
 class PresetDialog : public QDialog
 {
     Q_OBJECT
     QSerialPort serialPort;
     PresetMenu* presetMenu;
+    PasswordDialog* passwordDialog;
 public:
     PresetDialog(QWidget *parent = nullptr, PresetMenu* presetMenu = nullptr);
     ~PresetDialog();
+    QSerialPort &getSerialPort();
 private:
     void showEvent(QShowEvent *event) override;
     void closeEvent(QCloseEvent *event) override;

@@ -202,7 +202,9 @@ void Preset::loadFromSerial(QSerialPort& serialPort)
 void Preset::uploadToSerial(QSerialPort& serialPort)
 {
     if(serialPort.isOpen() && serialPort.isWritable()){
-        MacroConfig data;
+        Config config;
+        config.isPassword = false;
+        MacroConfig& data = config.macroConfig;
         // Copy expander addresses
         memcpy(data.expanderAddr, expanderAddr, MAX_EXPANDERS * sizeof(uint8_t));
         data.numInputs = this->inputs.size();
@@ -220,8 +222,7 @@ void Preset::uploadToSerial(QSerialPort& serialPort)
             data.inputs[inputIdx++] = action;
             dataPtr += sizeof(MacroPacket) * input.packets.size();
         }
-        // TODO: Fill in expander address later
-        int bytesWritten = serialPort.write((const char*)&data, sizeof(MacroConfig));
+        int bytesWritten = serialPort.write((const char*)&config, sizeof(Config));
 
         if(bytesWritten == -1) {
             throw "Failed to write to port " + serialPort.portName() + ", error: " + serialPort.errorString();

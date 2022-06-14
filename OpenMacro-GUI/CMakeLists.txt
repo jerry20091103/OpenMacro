@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
         main.cpp
         App/mainwindow.cpp App/mainwindow.h App/mainwindow.ui
         App/presetdialog.h App/presetdialog.cpp App/presetdialog.ui
+        App/passworddialog.h App/passworddialog.cpp App/passworddialog.ui
         App/debugmenu.h App/debugmenu.cpp
         App/presetmenu.h App/presetmenu.cpp
         App/inputlist.h App/inputlist.cpp

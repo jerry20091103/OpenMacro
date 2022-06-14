@@ -80,6 +80,13 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="passwordButton">
+     <property name="text">
+      <string>Upload Password</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
