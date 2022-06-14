@@ -74,7 +74,7 @@ PresetDialog::PresetDialog(QWidget* parent, PresetMenu *presetMenu)
         QMessageBox *msgBox = new QMessageBox(this);
         msgBox->setIcon(QMessageBox::Information);
         msgBox->setWindowTitle("Downloading");
-        msgBox->setText("Please hold down the encoder button on the macro device.");
+        msgBox->setInformativeText("Please hold down the encoder button on the macro device.");
         msgBox->setAttribute((Qt::WA_DeleteOnClose));
         msgBox->setModal(false);
         msgBox->show();
