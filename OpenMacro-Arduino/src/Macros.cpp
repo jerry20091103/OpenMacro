@@ -111,8 +111,37 @@ void Macros::runMacro(uint8_t input)
             if (packet->mode == MOUSE_MOVE)
             {
                 Mouse.press(packet->mouseMove.mouseBtn);
-                Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
+                taskManager.yieldForMicros(1000);
+                int8_t dx = packet->mouseMove.mouseX;
+                int8_t dy = packet->mouseMove.mouseY;
+                Mouse.move(0, 0, packet->mouseMove.wheel);
+                while (dx != 0 || dy != 0)
+                {
+                    if(dx > 0)
+                    {
+                        dx--;
+                        Mouse.move(1, 0, 0);
+                    }
+                    else if (dx < 0)
+                    {
+                        dx++;
+                        Mouse.move(-1, 0, 0);
+                    }
+
+                    if(dy > 0)
+                    {
+                        dy--;
+                        Mouse.move(0, 1, 0);
+                    }
+                    else if(dy < 0)
+                    {
+                        dy++;
+                        Mouse.move(0, -1, 0);
+                    }
+                    taskManager.yieldForMicros(1000);
+                }
                 Mouse.release(packet->mouseMove.mouseBtn);
+                //Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
             }
             else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {
