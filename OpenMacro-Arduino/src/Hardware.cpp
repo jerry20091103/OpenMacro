@@ -36,6 +36,7 @@ void HardwareSetup()
     switches.addSwitch(BTN7_PIN, BtnPressCallback);
     switches.addSwitch(BTN8_PIN, BtnPressCallback);
     switches.onRelease(BTN_ENC_PIN, BtnReleaseCallback);
+    switches.onRelease(BTN_JOY_PIN, BtnReleaseCallback);
     // multiIoAddExpander(multiIo, ioFrom23017(0x20), 16);
     // switches.addSwitch(EXPANDER_PIN_OFFSET, BtnPressCallback);
     // switches.addSwitch(EXPANDER_PIN_OFFSET + 1, BtnPressCallback);

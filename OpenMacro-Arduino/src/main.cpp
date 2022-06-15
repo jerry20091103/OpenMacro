@@ -51,7 +51,7 @@ void receiveSerial_readAnalog()
             else
             {
                 macros.saveToEEPROM(false);
-                oled.setCol(0);
+                oled.clear();
                 oled.print(F("MACRO\nRECEIVED"));
                 // open 1200 magic baud to let GUI force reset
                 Serial.begin(1200);
@@ -92,9 +92,9 @@ void setup()
         uint8_t expanded = 0;
         if (expanded = macros.setupMacros())
         {
-            oled.setCursor(0, 3);
+            //oled.setCursor(0, 3);
+            oled.print(F("\nEXPANDER"));
             oled.print(expanded);
-            oled.print(F("@EXPANDER"));
         }
     }
     taskManager.scheduleOnce(5000, displayCurMode);

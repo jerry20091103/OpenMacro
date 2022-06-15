@@ -117,7 +117,7 @@ void Macros::runMacro(uint8_t input)
                 Mouse.move(0, 0, packet->mouseMove.wheel);
                 while (dx != 0 || dy != 0)
                 {
-                    if(dx > 0)
+                    if (dx > 0)
                     {
                         dx--;
                         Mouse.move(1, 0, 0);
@@ -128,12 +128,12 @@ void Macros::runMacro(uint8_t input)
                         Mouse.move(-1, 0, 0);
                     }
 
-                    if(dy > 0)
+                    if (dy > 0)
                     {
                         dy--;
                         Mouse.move(0, 1, 0);
                     }
-                    else if(dy < 0)
+                    else if (dy < 0)
                     {
                         dy++;
                         Mouse.move(0, -1, 0);
@@ -141,7 +141,6 @@ void Macros::runMacro(uint8_t input)
                     taskManager.yieldForMicros(1000);
                 }
                 Mouse.release(packet->mouseMove.mouseBtn);
-                //Mouse.move(packet->mouseMove.mouseX, packet->mouseMove.mouseY, packet->mouseMove.wheel);
             }
             else if (packet->mode == KEYBOARD_MOUSE_CLICK) // KEYBOARD_MOUSE_CLICK
             {
@@ -151,6 +150,8 @@ void Macros::runMacro(uint8_t input)
                     Consumer.write(MEDIA_VOLUME_UP);
                 else if (packet->keycode == KEY_VOLUME_DOWN)
                     Consumer.write(MEDIA_VOLUME_DOWN);
+                else if (input == BTN_JOY)
+                    Keyboard.press((KeyboardKeycode)packet->keycode);
                 else
                     Keyboard.write((KeyboardKeycode)packet->keycode);
             }
@@ -165,9 +166,21 @@ void Macros::runMacro(uint8_t input)
     }
 }
 
+void Macros::releaseMacro(uint8_t input)
+{
+    for (uint8_t i = 0; i < config.macroConfig.inputs[input].size; i++)
+    {
+        MacroPacket *packet = (MacroPacket *)&config.macroConfig.commandBuffer[config.macroConfig.inputs[input].data + sizeof(MacroPacket) * i];
+        if (packet->mode == KEYBOARD_MOUSE_CLICK)
+        {
+            Keyboard.release((KeyboardKeycode)packet->keycode);
+        }
+    }
+}
+
 void Macros::clearConfig()
 {
-    memset(&config, 0, sizeof(MacroConfig));
+    memset(&config, 0, sizeof(Config));
 }
 
 bool Macros::checkExpanders()

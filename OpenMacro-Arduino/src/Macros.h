@@ -17,6 +17,7 @@ public:
     void clearConfig();
     void dumpConfig();
     void runMacro(uint8_t input);
+    void releaseMacro(uint8_t input);
     uint8_t setupMacros();
     bool checkExpanders();
     bool readRfid();

@@ -55,6 +55,10 @@ void BtnReleaseCallback(pinid_t pin, bool isHeld)
             displayCurMode();
         }
     }
+    else if(pin == BTN_JOY_PIN)
+    {
+        macros.releaseMacro(getInputPinNum(pin));
+    }
 }
 
 void EncCallback(int value)
