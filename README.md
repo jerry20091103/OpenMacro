@@ -8,4 +8,4 @@ This repository contains three subprojects:
 * **OpenMacro-GUI:** A Qt application that can be used to configure an OpenMacro device. You will need the Arduino USB driver to detect the Arduino board.
 * **OpenMacro-PCB:** A KiCad project that contains the layouts of a complete OpenMacro device.
 
-Note that the OpenMacro-GUI project has a dependency to the OpenMacro-Arduino project's `Keycodes.h`.
+Note that the OpenMacro-GUI project has a dependency to the OpenMacro-Arduino project's `Keycodes.h` and `MacroConfig.h`.
